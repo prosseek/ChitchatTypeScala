@@ -1,0 +1,34 @@
+# sbt specific
+.cache/
+.history/
+.lib/
+experiment/tmp/*
+dist/*
+target/
+lib_managed/
+src_managed/
+project/boot/
+project/plugins/project/
+
+# Python
+.pyc
+
+# Scala-IDE specific
+.scala_dependencies
+.worksheet
+
+lib/scalautils.jar
+**/.idea/workspace.xml
+**/.idea/tasks.xml
+
+*.class
+*.log
+*.cache
+
+# sbt specific
+dist/
+target/
+project/
+
+# Intellij
+.idea/
