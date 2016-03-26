@@ -2,22 +2,16 @@
 .cache/
 .history/
 .lib/
-experiment/tmp/*
-dist/*
-target/
-lib_managed/
-src_managed/
-project/boot/
-project/plugins/project/
+
+target/*
+project/*
+out/*
 
 # Python
 .pyc
 
-# Scala-IDE specific
-.scala_dependencies
-.worksheet
+# idea
 
-lib/scalautils.jar
 **/.idea/workspace.xml
 **/.idea/tasks.xml
 
@@ -25,10 +19,3 @@ lib/scalautils.jar
 *.log
 *.cache
 
-# sbt specific
-dist/
-target/
-project/
-
-# Intellij
-.idea/

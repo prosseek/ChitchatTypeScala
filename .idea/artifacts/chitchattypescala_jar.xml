@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="chitchattypescala:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/chitchattypescala_jar</output-path>
+    <root id="archive" name="chitchattypescala.jar">
+      <element id="module-output" name="chitchattypescala" />
+      <element id="extracted-dir" path="$USER_HOME$/.ivy2/cache/org.scala-lang/scala-library/jars/scala-library-2.11.8.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

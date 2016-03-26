@@ -1,3 +1,0 @@
-## Chitchat data type
-
-* reference
