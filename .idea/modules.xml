@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/chitchattypescala.iml" filepath="$PROJECT_DIR$/.idea/modules/chitchattypescala.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/chitchattypescala-build.iml" filepath="$PROJECT_DIR$/.idea/modules/chitchattypescala-build.iml" />
     </modules>
   </component>
 </project>

@@ -4,6 +4,42 @@ import org.scalatest._
 import scala.collection.BitSet
 
 class TestByteArrayTool extends FunSuite {
+  // string
+  test ("stringToByteArray") {
+    var value = "Hello, world"
+    assert(ByteArrayTool.stringToByteArray(value)(0) == value.size)
+    assert(new String(ByteArrayTool.stringToByteArray(value).slice(1, 1 + value.size), "ASCII") == value)
+  }
+
+  test ("ByteArrayToString") {
+    var value = "Hello"
+    var ba = Array[Byte](5) ++ value.getBytes
+    assert(value == ByteArrayTool.byteArrayToString(ba))
+
+    value = List.fill(255)("a").mkString
+    ba = Array[Byte](-1) ++ value.getBytes
+    assert(value == ByteArrayTool.byteArrayToString(ba))
+  }
+
+  test("bitSet to byte array test") {
+    // LOW --- HIGH
+    // 1111 0000 1010 ...
+    // 15        5    ...
+    var x = BitSet(0,1,2,3,8,10,104)
+    var y = ByteArrayTool.bitSetToByteArray(x)
+    assert(y.mkString(":") == "15:5:0:0:0:0:0:0:0:0:0:0:0:1")
+    assert(ByteArrayTool.byteArrayToBitSet(y) == x)
+
+    x = BitSet(0,1,2,3,4,5,6,7,8)
+    y = ByteArrayTool.bitSetToByteArray(x)
+    assert(y.mkString(":") == "-1:1")
+    assert(ByteArrayTool.byteArrayToBitSet(y) == x)
+
+    x = BitSet(0)
+    y = ByteArrayTool.bitSetToByteArray(x, 4)
+    assert(y.mkString(":") == "1:0:0:0") // LOW - HIGH bits
+    assert(ByteArrayTool.byteArrayToBitSet(y) == x)
+  }
 
   // double
   test ("double to byte array and back test ") {
@@ -81,51 +117,5 @@ class TestByteArrayTool extends FunSuite {
     assert(value == ByteArrayTool.byteArrayToLong(ByteArrayTool.longToByteArray(value)))
   }
 
-  // string
-  test ("stringToByteArray") {
-    var value = "Hello, world"
-    assert(ByteArrayTool.stringToByteArray(value)(0) == value.size)
-    assert(new String(ByteArrayTool.stringToByteArray(value).slice(1, 1 + value.size), "ASCII") == value)
-  }
 
-  test ("ByteArrayToString") {
-    var value = "Hello"
-    var ba = Array[Byte](5) ++ value.getBytes
-    assert(value == ByteArrayTool.byteArrayToString(ba))
-
-    value = List.fill(255)("a").mkString
-    ba = Array[Byte](-1) ++ value.getBytes
-    assert(value == ByteArrayTool.byteArrayToString(ba))
-  }
-
-  test("bitSet to bytearray test") {
-    var x = BitSet(0,1,2,3,8,10,104)
-    var y = ByteArrayTool.bitSetToByteArray(x)
-    assert(y.mkString(":") == "15:5:0:0:0:0:0:0:0:0:0:0:0:1")
-    assert(ByteArrayTool.byteArrayToBitSet(y) == x)
-
-    x = BitSet(0,1,2,3,4,5,6,7,8)
-    y = ByteArrayTool.bitSetToByteArray(x)
-    assert(y.mkString(":") == "-1:1")
-    assert(ByteArrayTool.byteArrayToBitSet(y) == x)
-
-    x = BitSet(0)
-    y = ByteArrayTool.bitSetToByteArray(x, 4)
-    assert(y.mkString(":") == "1:0:0:0")
-    assert(ByteArrayTool.byteArrayToBitSet(y) == x)
-  }
-
-  test ("byteToUnsigned") {
-    assert(ByteArrayTool.byteToUnsigned(2) == 2)
-    assert(ByteArrayTool.byteToUnsigned(1) == 1)
-    assert(ByteArrayTool.byteToUnsigned(-1) == 255)
-    assert(ByteArrayTool.byteToUnsigned(-2) == 254)
-  }
-
-  test ("unsignedToByte") {
-    assert(ByteArrayTool.unsignedToByte(2) == 2)
-    assert(ByteArrayTool.unsignedToByte(1) == 1)
-    assert(ByteArrayTool.unsignedToByte(255) == -1)
-    assert(ByteArrayTool.unsignedToByte(254) == -2)
-  }
 }

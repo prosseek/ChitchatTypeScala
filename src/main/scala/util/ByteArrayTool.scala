@@ -6,15 +6,37 @@ import scala.collection.BitSet
 import scala.collection.mutable.ArrayBuffer
 import scala.collection.mutable.{Map => MMap}
 
+import util.Util._
+
+/**
+  * ByteArrayTool module contains bytearray (Array[Byte]) from/to Scala data types
+  * It also provides adjust function to fit the type value in the given bytearray with N elements.
+  *
+  * 1. String (Pascal string)
+  * 1.1 stringToByteArray: "hello" -> [5Hello]
+  * 2.
+  */
+
 object ByteArrayTool {
+
+  /****************************************************************************
+    * Adjust
+    ****************************************************************************/
+
   /**
-   * Add more bytes to the value:Array[Byte]
-   *
-   * @param value
-   * @param originalSize
-   * @param goalSize
-   */
-  def adjust(value:Array[Byte], originalSize:Int, goalSize:Int, signExtension:Boolean = false) : Array[Byte] = {
+    * Given value of N bytes array, and given goalSize M >= N, append (M-N) to make the
+    * byte array size M.
+    *
+    * Why: In BF table of 8 bytes width, 4 bytes integer should be prepended 4 bytes.
+    *
+    * constraints:
+    *    goalSize should be the same or larger than the array size.
+    *
+    * @param value
+    * @param goalSize
+    */
+  def adjust(value:Array[Byte], goalSize:Int, signExtension:Boolean = false) : Array[Byte] = {
+    val originalSize = value.size
     if (goalSize == originalSize) return value // nothing to do when the goal size is the same as originalSize
     if (goalSize < originalSize) throw new Exception(s"Goal size (${goalSize}}) should be larger than original size (${originalSize}})")
 
@@ -28,6 +50,65 @@ object ByteArrayTool {
     value ++ head
   }
 
+  /******************************************************************
+    * Pascal type string to/from byte array
+    * "Hello" --> 5 (size of the string) + Hello => total 6 bytes of string
+    ******************************************************************/
+
+  /**
+    * String -> ByteArray
+    *
+    * @param x
+    * @return ByteArray that contains the string x
+    */
+  def stringToByteArray(x: String) = {
+    val size = (x.size + 1)
+    if (size > 255) throw new RuntimeException(s"String length of ${size} is over 255 bytes")
+    Array[Byte](unsignedToByte(x.size)) ++ x.getBytes()
+  }
+
+  /**
+    * String -> ByteArray with n elements
+    *
+    * constraint1: the maximum string width is 255, so n should not be negative number & less than 256 (0 <= x < 256)
+    * constraint2: the first element of the array is the width of string, so the goalWidth - 1 should be equal or larger
+    *              than the inputString width
+    *
+    * @param inputString
+    * @param goalWidth
+    * @return - converted byte array with goalWidth width
+    */
+  def stringToByteArray(inputString: String, goalWidth:Int) = {
+    if (goalWidth > 255 || goalWidth < 0)
+      throw new RuntimeException(s"Byte array length of ${goalWidth} is over 255 bytes or below zero")
+    val stringLength = inputString.size
+    if (stringLength > goalWidth - 1) // -1 is needed for the first byte to store string size
+      throw new RuntimeException(s"String length of ${stringLength} smaller than byte array length ${goalWidth}")
+
+    val diff = goalWidth - stringLength - 1
+    Array[Byte](unsignedToByte(stringLength)) ++ inputString.getBytes() ++ new Array[Byte](diff)
+  }
+
+  /**
+    * byteArray -> String
+    *
+    * How: the byteArray that contains string has the format [Size:String:000000....]
+    *      From the Size (bytearray(0), we can extract the String.
+    *
+    * Refer: detect the location of 0
+    * http://stackoverflow.com/questions/23976309/trimming-byte-array-when-converting-byte-array-to-string-in-java-scala
+    *
+    * @param byteArray
+    * @return string from the input byteArray
+    */
+  def byteArrayToString(byteArray: Array[Byte]) = {
+    //
+    val size = byteArray(0) & 0xFF
+    if (byteArray.size - 1 < size) // (x.size - 1 >= size) should be met
+      throw new RuntimeException(s"byte array size(${byteArray.size}} - 1) is smaller than (size)(${size}) ")
+    new String(byteArray.slice(1, size + 1), "ASCII")
+  }
+
   /*
     from Data : T -> ByteArray
    */
@@ -35,28 +116,28 @@ object ByteArrayTool {
   def intToByteArray(x: Int) = ByteBuffer.allocate(4).putInt(x).array()
   def intToByteArray(x: Int, size: Int) : Array[Byte] = {
     val res = intToByteArray(x)
-    adjust(value = res, originalSize = 4, goalSize = size, signExtension = true)
+    adjust(value = res, goalSize = size, signExtension = true)
   }
 
   // short
   def shortToByteArray(x: Short) = ByteBuffer.allocate(2).putShort(x).array()
   def shortToByteArray(x: Short, size: Int) : Array[Byte] = {
     val res = shortToByteArray(x)
-    adjust(value = res, originalSize = 2, goalSize = size, signExtension = true)
+    adjust(value = res, goalSize = size, signExtension = true)
   }
 
   // long
   def longToByteArray(x: Long) = ByteBuffer.allocate(8).putLong(x).array()
   def longToByteArray(x: Long, size: Int) : Array[Byte] = {
     val res = longToByteArray(x)
-    adjust(value = res, originalSize = 8, goalSize = size, signExtension = true)
+    adjust(value = res, goalSize = size, signExtension = true)
   }
 
   // byte
   def byteToByteArray(x: Byte) = ByteBuffer.allocate(1).put(x).array()
   def byteToByteArray(x: Byte, size: Int) : Array[Byte] = {
     val res = byteToByteArray(x)
-    adjust(value = res, originalSize = 1, goalSize = size, signExtension = true)
+    adjust(value = res, goalSize = size, signExtension = true)
   }
 
   // double
@@ -68,7 +149,7 @@ object ByteArrayTool {
   def doubleToByteArray(x: Double, size:Int = 8) = {
     if (size < 8) throw new Exception(s"Double data should be at least 8 bytes, but given ${size}")
     val l = java.lang.Double.doubleToLongBits(x)
-    adjust(longToByteArray(l), originalSize = 8, goalSize = size)
+    adjust(longToByteArray(l), goalSize = size)
   }
 
   // float
@@ -79,47 +160,7 @@ object ByteArrayTool {
   def floatToByteArray(x: Float, size:Int = 4) = {
     if (size < 4) throw new RuntimeException(s"Float data should be at least 4 bytes, but given ${size}")
     val l = java.lang.Float.floatToIntBits(x)
-    adjust(intToByteArray(l), originalSize = 4, goalSize = size)
-  }
-
-  /**
-   * -1 --> 255
-   * @param x
-   * @return
-   */
-  def byteToUnsigned(x:Byte) :Int = {
-    (0xFF & x).toInt
-  }
-
-  def unsignedToByte(x:Int) :Byte = {
-    assert(x >= 0 && x < 256)
-    if (x >= 0 && x < 256/2) x.toByte
-    else (x - 256).toByte
-  }
-
-  // string
-  def stringToByteArray(x: String, n:Int = -1) = {
-    // we implement Pascal type string (that has size of string as the first element)
-    val size = if (n == -1) (x.size + 1) else n
-    assert (size >= (x.size + 1), s"${size} >= ${x.size + 1}???")
-    val diff = size - (x.size + 1)
-    Array[Byte](unsignedToByte(x.size)) ++ x.getBytes() ++ new Array[Byte](diff)
-  }
-
-  /**
-   * detect the location of 0
-   * http://stackoverflow.com/questions/23976309/trimming-byte-array-when-converting-byte-array-to-string-in-java-scala
-   * @param x
-   */
-  def byteArrayToString(x: Array[Byte]) = {
-    val size = byteToUnsigned(x(0))
-    if(x.size < size + 1)
-      throw new RuntimeException(s"x.size(${x.size}}) is smaller than (size+1)(${size+1}) ")
-    new String(x.slice(1, size + 1), "ASCII")
-  }
-
-  def byteArrayToStringNoInterpret(x: Array[Byte]) = {
-    new String(x, "ASCII")
+    adjust(intToByteArray(l), goalSize = size)
   }
 
   // byte array
@@ -152,7 +193,7 @@ object ByteArrayTool {
     if (goalSize == -1) {
       byteArray
     } else {
-      adjust(byteArray, originalSize = byteArray.size, goalSize = goalSize)
+      adjust(byteArray, goalSize = goalSize)
     }
   }
 
