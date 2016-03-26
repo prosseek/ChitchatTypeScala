@@ -23,7 +23,13 @@ object BitSetTool {
     */
   def bitSetToByte(b:BitSet, sh:Int=0) : Byte = ((0 /: b) {(acc, input) => acc + (1 << (input - sh))}).toByte
   def bitSetToShort(b:BitSet, sh:Int=0) : Short = ((0 /: b) {(acc, input) => acc + (1 << (input - sh))}).toShort
-  def bitSetToInt(b:BitSet, bitWidth:Int, sh:Int=0) : Int = {
+  def bitSetToInt(b:BitSet, sh:Int=0) : Int = ((0 /: b) {(acc, input) => acc + (1 << (input - sh))})
+
+  /**
+    * Given bitset & bitWidth, it returns the value in integer type.
+    * {0,1,2} & 3 bit => -1
+    */
+  def bitSetToValue(b:BitSet, bitWidth:Int, sh:Int=0) : Int = {
     val res = ((0 /: b) {(acc, input) => acc + (1 << (input - sh))})
     val maxInt = scala.math.pow(2.0, bitWidth-1).toInt - 1
     if (res > maxInt) {
@@ -33,8 +39,5 @@ object BitSetTool {
     else
       res
   }
-  def bitSetToUnsignedInt(b:BitSet, bitWidth:Int, sh:Int=0) = {
-    val res = ((0 /: b) {(acc, input) => acc + (1 << (input - sh))})
-    res
-  }
+
 }
