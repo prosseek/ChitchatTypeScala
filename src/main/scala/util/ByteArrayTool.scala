@@ -6,25 +6,24 @@ import scala.collection.BitSet
 import scala.collection.mutable.ArrayBuffer
 import scala.collection.mutable.{Map => MMap}
 
-/**
-  * ByteArrayTool module contains bytearray (Array[Byte]) from/to Scala data types
+/** ByteArrayTool module contains bytearray (Array[Byte]) from/to Scala data types
   * It also provides adjust function to fit the type value in the given bytearray with N elements.
   *
-  * 1. String (Pascal string)
-  * 1.1 stringToByteArray: "hello" -> [5Hello]
-  * 1.2 byteArrayToString: 5Hello.... -> "Hello"
+  *  - String (Pascal string)
+  *    - 1.1 stringToByteArray: `"hello" -> [5Hello]`
+  *    - 1.2 byteArrayToString: `5Hello.... -> "Hello"`
   *
-  * 2. Int
-  * 2.1 Int (4 bytes)
-  * 2.2 Byte (1 byte)
-  * 2.3 Short (2 bytes)
-  * 2.4 Long (8 bytes)
+  *  - Int
+  *     - 2.1 Int (4 bytes)
+  *     - 2.2 Byte (1 byte)
+  *     - 2.3 Short (2 bytes)
+  *     - 2.4 Long (8 bytes)
   *
-  * 3. Double
-  * 3.1 Double (8 bytes)
-  * 3.2 Float (4 bytes)
+  *  - Double
+  *     - 3.1 Double (8 bytes)
+  *     - 3.2 Float (4 bytes)
   *
-  * 4. BitSet
+  *  - BitSet
   */
 
 object ByteArrayTool {
@@ -33,17 +32,12 @@ object ByteArrayTool {
     * Adjust
     ****************************************************************************/
 
-  /**
-    * Given value of N bytes array, and given goalSize M >= N, append (M-N) to make the
+  /** Given value of N bytes array, and given goalSize M >= N, append (M-N) to make the
     * byte array size M.
-    *
-    * Why: In BF table of 8 bytes width, 4 bytes integer should be prepended 4 bytes.
-    *
-    * constraints:
-    *    goalSize should be the same or larger than the array size.
     *
     * @param value
     * @param goalSize
+    * @return Expanded byte array
     */
   def adjust(value:Array[Byte], goalSize:Int, signExtension:Boolean = false) : Array[Byte] = {
     val originalSize = value.size
@@ -81,8 +75,9 @@ object ByteArrayTool {
   /**
     * String -> ByteArray with n elements
     *
-    * constraint1: the maximum string width is 255, so n should not be negative number & less than 256 (0 <= x < 256)
-    * constraint2: the first element of the array is the width of string, so the goalWidth - 1 should be equal or larger
+    * ==== Constraints ====
+    *   1. the maximum string width is 255, so n should not be negative number & less than 256 `(0 <= x < 256)`
+    *   1. the first element of the array is the width of string, so the goalWidth - 1 should be equal or larger
     *              than the inputString width
     *
     * @param inputString
@@ -103,11 +98,16 @@ object ByteArrayTool {
   /**
     * byteArray -> String
     *
-    * How: the byteArray that contains string has the format [Size:String:000000....]
-    *      From the Size (bytearray(0), we can extract the String.
+    * ==== idea ====
     *
-    * Refer: detect the location of 0
-    * http://stackoverflow.com/questions/23976309/trimming-byte-array-when-converting-byte-array-to-string-in-java-scala
+    * {{{
+    * 1. The byteArray that contains string has the format [Size:String:000000....],
+    * 1. we can get from the Size (bytearray(0), we can extract the String.
+    * }}}
+    *
+    * ==== Refer ====
+    *
+    *  - detect the location of 0: [[http://stackoverflow.com/questions/23976309/trimming-byte-array-when-converting-byte-array-to-string-in-java-scala]]
     *
     * @param byteArray
     * @return string from the input byteArray
@@ -125,6 +125,11 @@ object ByteArrayTool {
     ****************************************************************************/
 
   // Int (4 bytes)
+  /** Returns byte array from the integer value
+    *
+    * @param x
+    * @return
+    */
   def intToByteArray(x: Int) = ByteBuffer.allocate(4).putInt(x).array()
   def intToByteArray(x: Int, goalSize: Int) : Array[Byte] = {
     val value = intToByteArray(x)
@@ -177,7 +182,12 @@ object ByteArrayTool {
     * Type Double to/from ByteArray
     ****************************************************************************/
 
-  // double
+  /** Returns double from the input type of byte array
+    *
+    * @param x
+    * @param size
+    * @return generated double value
+    */
   def doubleToByteArray(x: Double, size:Int = 8) = {
     if (size < 8) throw new Exception(s"Double data should be at least 8 bytes, but given ${size}")
     val l = java.lang.Double.doubleToLongBits(x)
@@ -200,12 +210,17 @@ object ByteArrayTool {
   /****************************************************************************
   * BitSet to/from ByteArray
   ****************************************************************************/
-  /**
-    * survey:
+  /** returns a byte array from bitSet
     *
+    * ==== idea ====
+    *
+    * {{{
     * {0, 8, 9, 10, 16} => 0:7:1 (when goalSize is 3 bytes)
+    * }}}
     *
-    * Algorithm:
+    * ==== Algorithm ====
+    *
+    * {{{
     * 1. Check the special case when there is no 0 => return ByteArray of 0's
     *    When no goalSize is given, return empty Array[Byte]
     * 2. For each element i in the BitSet
@@ -221,6 +236,7 @@ object ByteArrayTool {
     * 4. From the map, the maximum value of group + 1 is the size of the bytearray
     *    as the group starts from 0
     * 5. Make the byte array and set the array with (group, shifted value)
+    * }}}
     *
     * @param bitSet
     * @param goalSize
@@ -250,19 +266,24 @@ object ByteArrayTool {
     }
   }
 
-  /**
-    * survey:
+  /** Returns bitSet from byte array
     *
+    * ==== idea ====
+    * {{{
     * Given 0:0:0:1 (low to high), the location of the 1 is
     * 0...0 (lower 8x3 = 24 bit) 10000000 (first of the last byte)
     *
     * In this example, the 24 + 0 = {24} will be returned
+    * }}}
     *
-    * algorithm:
+    * ==== algorithm ====
+    *
+    * {{{
     * 1. get a pair of (value, index) => (0,0) (0,1) (0,2) (1,3)
     *    the index multiplied by 8 gives the added location of the 1
     * 2. byteToBitSet is used to get the BitSet for each byte
     *    the index*8 is added to the results
+    * }}}
     *
     * @param byteArray
     * @return generated BitSet

@@ -1,31 +1,28 @@
 package util
 
-/**
-  Utility module contains functions that are used by other modules.
-
-  1. Conversion functions
-  1.1. dms to dd
-
-  2. bit width calculation functions
-  2.1 getBitsForValue: value 4 requires 3 bits (000 - 111(7)) to represent it
-  2.2 getBytesForBits: 6 bits requires 2 bytes
-
+/** Provides functions for conversion
+  *
+  *  1. Conversion functions
+  *     1. dms to dd
+  *  1. bit width calculation functions
+  *     1. getBitsForValue: value 4 requires 3 bits `(000 - 111(7))` to represent it
+  *     1. getBytesForBits: 6 bits requires 2 bytes
   */
 
 object Util {
 
-  /******************************************************************
-    * dms to dd
-    ******************************************************************
-    *
-    * Why: For geolocation information representation there are dms and dd format.
-    *      These functions does the conversion.
-    */
+  /********************************************************/
+  // dms to dd
+  /********************************************************/
 
   /**
-    * Location inforamtion format change
-    * DMS (Day, Month, Second1, Second2) format is modified into floating point DD format
+    * Location inforamtion format change. DMS (Day, Month, Second1, Second2) format is modified into floating point DD format
     *
+    * ==== Why ====
+    * For geolocation information representation there are dms and dd format.
+    *      These functions does the conversion.
+    *
+    * ==== Notice ====
     * Only Tuple or four parameters are used for input
     *
     * @param value
@@ -42,22 +39,28 @@ object Util {
       -(-d.toDouble + m.toDouble/60.0 + s/3600.0)
   }
 
-  /******************************************************************
-    * bit width functions
-    ******************************************************************
-    *
-    * Why: BF table width are measured in byte size, but the width parameter 'q' is measured in bits.
-    *      So, I need to get the values; for example, I have 15 bits, how many bytes are needed?
-    *      This group of function includes other conversion; for example, how many bits are needed for a value 10?
-    */
+  /********************************************************/
+  // getBits and getBytes functions
+  /********************************************************/
 
   /**
     * Given value, returns the total number of bits to represent the value
-    * example:
-    *   3 -> we need two bits 0 - (2**2-1) to represent the 3
-    *   100 -> we need 7 bits 0 - (2**7 - 1) to represent the value 100
     *
-    * Warning: this algorithm checks the value between 2**0 and 2**100
+    * {{{
+    *   3 -> we need two bits
+    *     3 bits can represent from 0 to (2**2-1)
+    *   100 -> we need 7 bits
+    *     7 bits can represent from 0 to (2**7 - 1)
+    * }}}
+    *
+    * ==== Why ====
+    *
+    * BF table width are measured in byte size, but the width parameter 'q' is measured in bits.
+    *      So, I need to get the values; for example, I have 15 bits, how many bytes are needed?
+    *      This group of function includes other conversion; for example, how many bits are needed for a value 10?
+    *
+    * ==== Warning ====
+    *  - the algorithm only checks the value between `2**0` and `2**100`
     *
     * @param value
     * @return

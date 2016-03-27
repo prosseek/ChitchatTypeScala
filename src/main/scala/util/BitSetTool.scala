@@ -3,9 +3,8 @@ package util
 import scala.collection.BitSet
 
 object BitSetTool {
-  /**
-    * Byte(8)/Short(16)/Int(32) -> bitSet
-    */
+
+  // Byte(8)/Short(16)/Int(32) -> bitSet
 
   def byteToBitSet(x:Byte, shift:Int = 0) = {
     // _* teaches compiler that we are dealing with a vararg, not a seq
@@ -18,16 +17,25 @@ object BitSetTool {
     BitSet((for (i <- 0 to (32 - 1) if (((x & 0xFFFFFFFF) >> i) & 1) == 1) yield (i + shift)): _*)
   }
 
-  /**
-    * bitSet -> Byte(8)/Short(16)/Int(32)
-    */
+  // bitSet -> Byte(8)/Short(16)/Int(32)
+
   def bitSetToByte(b:BitSet, sh:Int=0) : Byte = ((0 /: b) {(acc, input) => acc + (1 << (input - sh))}).toByte
   def bitSetToShort(b:BitSet, sh:Int=0) : Short = ((0 /: b) {(acc, input) => acc + (1 << (input - sh))}).toShort
   def bitSetToInt(b:BitSet, sh:Int=0) : Int = ((0 /: b) {(acc, input) => acc + (1 << (input - sh))})
 
-  /**
+  /** Returns a value that bitSet represents
+    *
+    * ==== idea ====
+    *
     * Given bitset & bitWidth, it returns the value in integer type.
-    * {0,1,2} & 3 bit => -1
+    * {{{
+    *  {0,1,2} & 3 bit => -1 (in 3 bit system 111 is -1)
+    * }}}
+
+    * @param b
+    * @param bitWidth
+    * @param sh
+    * @return
     */
   def bitSetToValue(b:BitSet, bitWidth:Int, sh:Int=0) : Int = {
     val res = ((0 /: b) {(acc, input) => acc + (1 << (input - sh))})
