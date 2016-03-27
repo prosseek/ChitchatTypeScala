@@ -17,8 +17,31 @@ class TestByteArrayTool extends FunSuite {
     assert(value == ByteArrayTool.byteArrayToString(ba))
 
     value = List.fill(255)("a").mkString
-    ba = Array[Byte](-1) ++ value.getBytes
+    ba = Array[Byte]((255 & 0xFF).toByte) ++ value.getBytes
     assert(value == ByteArrayTool.byteArrayToString(ba))
+  }
+
+  // int
+  test ("int to byte array and back test ") {
+    var value = 0
+    assert(value == ByteArrayTool.byteArrayToInt(ByteArrayTool.intToByteArray(value)))
+    value = Int.MaxValue
+    assert(value == ByteArrayTool.byteArrayToInt(ByteArrayTool.intToByteArray(value)))
+    value = Int.MinValue
+    assert(value == ByteArrayTool.byteArrayToInt(ByteArrayTool.intToByteArray(value)))
+    value = 12343434
+    assert(value == ByteArrayTool.byteArrayToInt(ByteArrayTool.intToByteArray(value)))
+  }
+
+  test ("when byte array size is more than 4 bytes") {
+    var intValue = 1
+    assert(ByteArrayTool.intToByteArray(intValue, 10).mkString(":") == "0:0:0:1:0:0:0:0:0:0")
+
+    intValue = -1
+    assert(ByteArrayTool.intToByteArray(intValue, 10).mkString(":") == "-1:-1:-1:-1:0:0:0:0:0:0")
+
+    var value = Array[Byte](0,0,0,1,0)
+    assert(ByteArrayTool.byteArrayToInt(value) == 1)
   }
 
   test("bitSet to byte array test") {
@@ -39,6 +62,13 @@ class TestByteArrayTool extends FunSuite {
     y = ByteArrayTool.bitSetToByteArray(x, 4)
     assert(y.mkString(":") == "1:0:0:0") // LOW - HIGH bits
     assert(ByteArrayTool.byteArrayToBitSet(y) == x)
+
+    // special case when there is no 1 in the value
+    x = BitSet()
+    y = ByteArrayTool.bitSetToByteArray(x)
+    assert(y.mkString(":") == "")
+    y = ByteArrayTool.bitSetToByteArray(x, 10)
+    assert(y.mkString(":") == "0:0:0:0:0:0:0:0:0:0")
   }
 
   // double
@@ -77,18 +107,6 @@ class TestByteArrayTool extends FunSuite {
     assert(value == ByteArrayTool.byteArrayToByte(ByteArrayTool.byteToByteArray(value)))
     value = -123
     assert(value == ByteArrayTool.byteArrayToByte(ByteArrayTool.byteToByteArray(value)))
-  }
-
-  // int
-  test ("int to byte array and back test ") {
-    var value = 0
-    assert(value == ByteArrayTool.byteArrayToInt(ByteArrayTool.intToByteArray(value)))
-    value = Int.MaxValue
-    assert(value == ByteArrayTool.byteArrayToInt(ByteArrayTool.intToByteArray(value)))
-    value = Int.MinValue
-    assert(value == ByteArrayTool.byteArrayToInt(ByteArrayTool.intToByteArray(value)))
-    value = 12343434
-    assert(value == ByteArrayTool.byteArrayToInt(ByteArrayTool.intToByteArray(value)))
   }
 
   // short

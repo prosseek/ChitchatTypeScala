@@ -4,8 +4,7 @@ package util
   Utility module contains functions that are used by other modules.
 
   1. Conversion functions
-  1.1. byte to/from unsigned
-  1.2. dms to dd
+  1.1. dms to dd
 
   2. bit width calculation functions
   2.1 getBitsForValue: value 4 requires 3 bits (000 - 111(7)) to represent it
@@ -14,36 +13,6 @@ package util
   */
 
 object Util {
-
-  /******************************************************************
-    * byte to/from unsigned functions
-    ******************************************************************
-    * Why: Scala does not support unsigned type, but we need a byte that contains value from 0x00 to 0xFF without interpreting
-    * the value with highest bit set as negative value.
-    *
-    * How: From a byte type value, we create an int type value that ranges from 0x00 to 0xFF from masking with 0xFF.
-    */
-
-  /**
-    * Given signed byte, returns a int type range from 0 - 255.
-    * example:
-    *  +1 --> 1 (4 byte)
-    *  -1 --> 255 (4 byte)
-    *
-    * @param x
-    * @return Int type value range from 0x00 to 0xFF
-    */
-  def byteToUnsigned(x:Byte) = {
-    // 0xFF & operation gives the int value, so we don't need the toInt
-    (0xFF & x)
-  }
-
-  def unsignedToByte(x:Int) = {
-//    if (x < 0 || x >= 256) throw new RuntimeException(s"Input value is out of range ${x}")
-//    if (x >= 0 && x < 256/2) x.toByte
-//    else (x - 256).toByte
-    (x & 0xFF).toByte
-  }
 
   /******************************************************************
     * dms to dd

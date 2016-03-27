@@ -6,15 +6,25 @@ import scala.collection.BitSet
 import scala.collection.mutable.ArrayBuffer
 import scala.collection.mutable.{Map => MMap}
 
-import util.Util._
-
 /**
   * ByteArrayTool module contains bytearray (Array[Byte]) from/to Scala data types
   * It also provides adjust function to fit the type value in the given bytearray with N elements.
   *
   * 1. String (Pascal string)
   * 1.1 stringToByteArray: "hello" -> [5Hello]
-  * 2.
+  * 1.2 byteArrayToString: 5Hello.... -> "Hello"
+  *
+  * 2. Int
+  * 2.1 Int (4 bytes)
+  * 2.2 Byte (1 byte)
+  * 2.3 Short (2 bytes)
+  * 2.4 Long (8 bytes)
+  *
+  * 3. Double
+  * 3.1 Double (8 bytes)
+  * 3.2 Float (4 bytes)
+  *
+  * 4. BitSet
   */
 
 object ByteArrayTool {
@@ -62,9 +72,10 @@ object ByteArrayTool {
     * @return ByteArray that contains the string x
     */
   def stringToByteArray(x: String) = {
-    val size = (x.size + 1)
-    if (size > 255) throw new RuntimeException(s"String length of ${size} is over 255 bytes")
-    Array[Byte](unsignedToByte(x.size)) ++ x.getBytes()
+    val stringSize = x.size
+    val arraySize = (stringSize + 1)
+    if (stringSize > 255) throw new RuntimeException(s"String length of ${stringSize} is over 255 bytes")
+    Array[Byte]((x.size & 0xFF).toByte) ++ x.getBytes()
   }
 
   /**
@@ -86,7 +97,7 @@ object ByteArrayTool {
       throw new RuntimeException(s"String length of ${stringLength} smaller than byte array length ${goalWidth}")
 
     val diff = goalWidth - stringLength - 1
-    Array[Byte](unsignedToByte(stringLength)) ++ inputString.getBytes() ++ new Array[Byte](diff)
+    Array[Byte]((stringLength & 0xFF).toByte) ++ inputString.getBytes() ++ new Array[Byte](diff)
   }
 
   /**
@@ -109,28 +120,26 @@ object ByteArrayTool {
     new String(byteArray.slice(1, size + 1), "ASCII")
   }
 
-  /*
-    from Data : T -> ByteArray
-   */
-  // int
+  /****************************************************************************
+    * Type Int to/from ByteArray
+    ****************************************************************************/
+
+  // Int (4 bytes)
   def intToByteArray(x: Int) = ByteBuffer.allocate(4).putInt(x).array()
-  def intToByteArray(x: Int, size: Int) : Array[Byte] = {
-    val res = intToByteArray(x)
-    adjust(value = res, goalSize = size, signExtension = true)
+  def intToByteArray(x: Int, goalSize: Int) : Array[Byte] = {
+    val value = intToByteArray(x)
+    // We do not need a sign extension (set as false), as the 4 bytes are encoded in big endian
+    // 1 -> 0:0:0:1 (From low to high)
+    // -2 -> -1:-1:-1:-2 (From low to high)
+    //
+    // intToByteArray(-2)
+    // a: Array[Byte] = Array(-1, -1, -1, -2)
+    // var b = adjust(a, 100)
+    // b: Array[Byte] = Array(-1, -1, -1, -2, 0, ... , 0, 0) <- meaningless to append -1s
+    adjust(value = value, goalSize = goalSize)
   }
-
-  // short
-  def shortToByteArray(x: Short) = ByteBuffer.allocate(2).putShort(x).array()
-  def shortToByteArray(x: Short, size: Int) : Array[Byte] = {
-    val res = shortToByteArray(x)
-    adjust(value = res, goalSize = size, signExtension = true)
-  }
-
-  // long
-  def longToByteArray(x: Long) = ByteBuffer.allocate(8).putLong(x).array()
-  def longToByteArray(x: Long, size: Int) : Array[Byte] = {
-    val res = longToByteArray(x)
-    adjust(value = res, goalSize = size, signExtension = true)
+  def byteArrayToInt(x: Array[Byte]) = {
+    ByteBuffer.wrap(x).getInt
   }
 
   // byte
@@ -139,46 +148,90 @@ object ByteArrayTool {
     val res = byteToByteArray(x)
     adjust(value = res, goalSize = size, signExtension = true)
   }
-
-  // double
-  def doubleToByteArray(x: Double) = {
-    val l = java.lang.Double.doubleToLongBits(x)
-    longToByteArray(l)
+  def byteArrayToByte(x: Array[Byte]) = {
+    ByteBuffer.wrap(x).get()
   }
 
+  // short (2 bytes)
+  def shortToByteArray(x: Short) = ByteBuffer.allocate(2).putShort(x).array()
+  def shortToByteArray(x: Short, size: Int) : Array[Byte] = {
+    val res = shortToByteArray(x)
+    adjust(value = res, goalSize = size)
+  }
+  def byteArrayToShort(x: Array[Byte]) = {
+    ByteBuffer.wrap(x).getShort
+  }
+
+  // long (8 bytes)
+  def longToByteArray(x: Long) = ByteBuffer.allocate(8).putLong(x).array()
+  def longToByteArray(x: Long, size: Int) : Array[Byte] = {
+    val res = longToByteArray(x)
+    adjust(value = res, goalSize = size, signExtension = true)
+  }
+  // long
+  def byteArrayToLong(x: Array[Byte]) = {
+    ByteBuffer.wrap(x).getLong
+  }
+
+  /****************************************************************************
+    * Type Double to/from ByteArray
+    ****************************************************************************/
+
+  // double
   def doubleToByteArray(x: Double, size:Int = 8) = {
     if (size < 8) throw new Exception(s"Double data should be at least 8 bytes, but given ${size}")
     val l = java.lang.Double.doubleToLongBits(x)
     adjust(longToByteArray(l), goalSize = size)
   }
+  def byteArrayToDouble(x: Array[Byte]) = {
+    ByteBuffer.wrap(x).getDouble
+  }
 
   // float
-  def floatToByteArray(x: Float) = {
-    val l = java.lang.Float.floatToIntBits(x)
-    intToByteArray(l)
-  }
   def floatToByteArray(x: Float, size:Int = 4) = {
     if (size < 4) throw new RuntimeException(s"Float data should be at least 4 bytes, but given ${size}")
     val l = java.lang.Float.floatToIntBits(x)
     adjust(intToByteArray(l), goalSize = size)
   }
-
-  // byte array
-  def byteArrayToBitSet(x:Array[Byte]) = {
-    var res = ArrayBuffer[Int]()
-    for ((v,i) <- x.zipWithIndex if v != 0) {
-      res.appendAll(BitSetTool.byteToBitSet(v).toArray.map(_ + 8*i))
-    }
-    scala.collection.immutable.BitSet(res: _*)
+  def byteArrayToFloat(x: Array[Byte]) = {
+    ByteBuffer.wrap(x).getFloat
   }
 
-  def bitSetToByteArray(x:BitSet, goalSize:Int = -1) :Array[Byte] = {
-    // bug [2014/08/23]
+  /****************************************************************************
+  * BitSet to/from ByteArray
+  ****************************************************************************/
+  /**
+    * survey:
+    *
+    * {0, 8, 9, 10, 16} => 0:7:1 (when goalSize is 3 bytes)
+    *
+    * Algorithm:
+    * 1. Check the special case when there is no 0 => return ByteArray of 0's
+    *    When no goalSize is given, return empty Array[Byte]
+    * 2. For each element i in the BitSet
+    *    i / 8 is the Nth element in the array (let's call it group)
+    *    i % 8 is the bitLocation
+    * 3. Bit set is the addition of shifted value
+    *    Making 10001000 (low to high) =>
+    *           --------
+    *           01234567
+    *    is (1 << 0 (0 bit shift) + 1 << 4 (7 bit shift) => 2^0 (1) + 2^4 (16) = 17
+    *
+    *    Create a map (group, sum of shifted values in the group)
+    * 4. From the map, the maximum value of group + 1 is the size of the bytearray
+    *    as the group starts from 0
+    * 5. Make the byte array and set the array with (group, shifted value)
+    *
+    * @param bitSet
+    * @param goalSize
+    * @return generated byteArray
+    */
+  def bitSetToByteArray(bitSet:BitSet, goalSize:Int = 0) :Array[Byte] = {
     // when there is no input in x:BitSet, should return Array[Byte](0)
-    if (x.size == 0) return Array[Byte](0)
+    if (bitSet.size == 0) return Array.fill[Byte](goalSize)(0)
 
     val bits = MMap[Int, Byte]().withDefaultValue(0)
-    for (i <- x) {
+    for (i <- bitSet) {
       val bitLocation = i % 8
       val group = i / 8
       bits(group) = (bits(group) + (1 << bitLocation)).toByte
@@ -190,44 +243,35 @@ object ByteArrayTool {
     }
 
     // default goalSize set and adjust
-    if (goalSize == -1) {
+    if (goalSize == 0) {
       byteArray
     } else {
       adjust(byteArray, goalSize = goalSize)
     }
   }
 
-  // byte
   /**
-   * ByteBuffer.wrap(x).get() -> Returns the value (Byte)
-   * @param x
-   * @return
-   */
-  def byteArrayToByte(x: Array[Byte]) = {
-    ByteBuffer.wrap(x).get()
-  }
-
-  def byteArrayToShort(x: Array[Byte]) = {
-    ByteBuffer.wrap(x).getShort
-  }
-
-  // int
-  def byteArrayToInt(x: Array[Byte]) = {
-    ByteBuffer.wrap(x).getInt
-  }
-
-  // long
-  def byteArrayToLong(x: Array[Byte]) = {
-    ByteBuffer.wrap(x).getLong
-  }
-
-  def byteArrayToDouble(x: Array[Byte]) = {
-    ByteBuffer.wrap(x).getDouble
-  }
-
-  // float
-  def byteArrayToFloat(x: Array[Byte]) = {
-    ByteBuffer.wrap(x).getFloat
+    * survey:
+    *
+    * Given 0:0:0:1 (low to high), the location of the 1 is
+    * 0...0 (lower 8x3 = 24 bit) 10000000 (first of the last byte)
+    *
+    * In this example, the 24 + 0 = {24} will be returned
+    *
+    * algorithm:
+    * 1. get a pair of (value, index) => (0,0) (0,1) (0,2) (1,3)
+    *    the index multiplied by 8 gives the added location of the 1
+    * 2. byteToBitSet is used to get the BitSet for each byte
+    *    the index*8 is added to the results
+    *
+    * @param byteArray
+    * @return generated BitSet
+    */
+  def byteArrayToBitSet(byteArray:Array[Byte]) = {
+    var res = ArrayBuffer[Int]()
+    for ((v,i) <- byteArray.zipWithIndex if v != 0) {
+      res.appendAll(BitSetTool.byteToBitSet(v).toArray.map(_ + 8*i))
+    }
+    scala.collection.immutable.BitSet(res: _*)
   }
 }
-

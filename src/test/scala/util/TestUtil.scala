@@ -4,25 +4,6 @@ import org.scalatest.FunSuite
 
 class TestUtil extends FunSuite {
 /******************************************************************
-  * byte to/from unsigned functions
-  ******************************************************************/
-
-  // byteToUnsigned and back
-  test ("byteToUnsigned") {
-    assert(Util.byteToUnsigned(2) == 2)
-    assert(Util.byteToUnsigned(1) == 1)
-    assert(Util.byteToUnsigned(-1) == 255)
-    assert(Util.byteToUnsigned(-2) == 254)
-  }
-
-  test ("unsignedToByte") {
-    assert(Util.unsignedToByte(2) == 2)
-    assert(Util.unsignedToByte(1) == 1)
-    assert(Util.unsignedToByte(255) == -1)
-    assert(Util.unsignedToByte(254) == -2)
-  }
-
-/******************************************************************
   * dms to dd
   ******************************************************************/
 
