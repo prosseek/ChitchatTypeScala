@@ -14,10 +14,13 @@ object Util {
     *
     * ==== Example ====
     * {{{
-    *   A/B/modules directory has A.class, B.class and C.class
-    *   getFiles("A/B/modules", "modules")
+    *   The base directory is A/B.
+    *   The class has namespace a.b.
+    *   The A/B/modules directory has A.class, B.class and C.class
+    *
+    *   getFileNames("A/B/", "a.b")
     *   ->
-    *   List[String]("modules.A, modules.B, modules.C")
+    *   List[String]("a.b.A, a.b.B, a.b.C")
     * }}}
     *
     * ==== Why ====
@@ -37,13 +40,14 @@ object Util {
     * @return List[String] of the class names in the directory (given namespace prependes)
     */
 
-  private def getFiles(directory:String, namespace:String) = {
+  private[file] def getFileNames(directory:String, namespace:String) = {
     val files = ArrayBuffer[String]()
-    val d = new File(directory)
+    val namespaceString = namespace.replace(".", "/")
+    val d = new File(directory + "/" + namespaceString)
     if (d.exists && d.isDirectory) {
-      // http://stackoverflow.com/questions/36254248/sequencing-collections-in-scala/
+
       d.listFiles.filter(_.getName.endsWith(".class"))
-        .map(namespace + "." + _.getName.replace(directory, "")
+        .map(namespace + "." + _.getName.replace(directory, "").replace(namespaceString, "")
           .replace(".class","")).toList
     } else {
       List[String]()
@@ -56,7 +60,7 @@ object Util {
     * ==== Example ====
     * {{{
     *   A/B/modules directory has A.class, B.class and C.class
-    *   getClasses[modules.A]("A/B/modules", "modules")
+    *   getClassInstances[modules.A]("A/B/", "modules")
     *   ->
     *   List[modules.A](instance of A, instance of B, instance of C)
     * }}}
@@ -67,9 +71,9 @@ object Util {
     * @return
     */
 
-  def getClasses[T](directory:String, namespace:String) = {
-    val files = getFiles(directory, namespace)
+  def getClassInstances[T](directory:String, namespace:String) = {
+    val files = getFileNames(directory, namespace)
 
-    files.map(Class.forName(_).newInstance().asInstanceOf[T]).toList
+    files.map(Class.forName(_).newInstance().asInstanceOf[T])
   }
 }

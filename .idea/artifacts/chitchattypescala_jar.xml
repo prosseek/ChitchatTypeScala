@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" build-on-make="true" name="chitchattypescala:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/chitchattypescala_jar</output-path>
-    <root id="archive" name="chitchattypescala.jar">
-      <element id="module-output" name="chitchattypescala" />
-    </root>
-  </artifact>
-</component>

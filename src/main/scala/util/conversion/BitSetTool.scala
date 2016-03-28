@@ -25,11 +25,11 @@ object BitSetTool {
 
   /** Returns a value that bitSet represents
     *
-    * ==== idea ====
+    * ==== Example ====
     *
     * Given bitset & bitWidth, it returns the value in integer type.
     * {{{
-    *  {0,1,2} & 3 bit => -1 (in 3 bit system 111 is -1)
+    *  With Bitset of {0,1,2} in 3 bit => -1 (in 3 bit system 111 is -1)
     * }}}
 
     * @param b

@@ -6,6 +6,7 @@ package chitchat.types
 import scala.collection.BitSet
 
 abstract class Bit {
+  def size
 }
 
 /*
