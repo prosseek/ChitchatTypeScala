@@ -19,3 +19,4 @@ out/*
 *.log
 *.cache
 
+.DS_Store

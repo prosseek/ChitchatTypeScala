@@ -1,4 +1,4 @@
-package util
+package util.conversion
 
 import org.scalatest._
 import scala.collection.BitSet

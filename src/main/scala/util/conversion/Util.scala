@@ -1,4 +1,4 @@
-package util
+package util.conversion
 
 /** Provides functions for conversion
   *
