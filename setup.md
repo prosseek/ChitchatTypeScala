@@ -1,7 +1,9 @@
-1. In Project Structure/Modules, you should add "<CURRENT_DIRECTORY>/src/test/resources/util/file" as Dependencies.
+### Preparation for util.file.TestUtil test
+
+* Execute `sbt package` to create the jar file in `target` directory
+* Execute `runme.sh` in `<CURRENT_DIRECTORY>/src/test/resources/util/file` directory to create class files in `chitchat/types` sub-directory.
+* Make sure in Project Structure -> Modules has dependency `<CURRENT_DIRECTORY>/src/test/resources/util/file`
     * Make the scope as "Test" not the default "Compile".
-    * Then, run `runme.sh` in the directory to create class files in `modules` directory. 
-	* This is required for util/file/TestUtil.scala test. 
-    
+
 ----
 * [2016/03/28]10:06AM

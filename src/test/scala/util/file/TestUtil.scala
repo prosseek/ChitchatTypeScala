@@ -3,27 +3,35 @@ package util.file
 import org.scalatest._
 import Util._
 
-/**
-  * You should execute runme.sh in `./src/test/resources/util/file/` directory to create the class files.
-  * to create the class files in the modules directory.
-  */
-
 class TestUtil extends FunSuite {
   test ("getFileNames test") {
     // http://stackoverflow.com/questions/5285898/how-to-access-test-resources
-    val namespace = "modules"
+    val namespace = "chitchat.types"
     val directory = "./src/test/resources/util/file/"
     val files = getFileNames(directory, namespace)
 
-    assert("modules.A:modules.B:modules.C" == files.mkString(":"))
+    assert("chitchat.types.A:chitchat.types.B:chitchat.types.C" == files.mkString(":"))
   }
 
+  /**
+    * ==== Preparation for this test ====
+    *
+    * 1. Run `sbt package` to create the jar file that contains the Bit class
+    * 2. `test/resources/file` directory has three files that implements Bit class,
+    *     You should first execute the `runme.sh` to get class files in `chitchat.types` sub-directory.
+    */
   test ("getClassInstances test") {
     // http://stackoverflow.com/questions/5285898/how-to-access-test-resources
-    val namespace = "modules"
-    val directory = "./src/test/resources/util/file/modules/"
+    val namespace = "chitchat.types"
+    val directory = "./src/test/resources/util/file/"
     val instantiations = getClassInstances[chitchat.types.Bit](directory, namespace)
 
-//    assert("modules.A:modules.B:modules.C" == files.mkString(":"))
+    instantiations.foreach { instance =>
+      instance.name match {
+        case "A" => assert(instance.size == 100)
+        case "B" => assert(instance.size == 200)
+        case "C" => assert(instance.size == 300)
+      }
+    }
   }
 }

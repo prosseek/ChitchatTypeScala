@@ -1,8 +1,3 @@
-//package util.file
 package chitchat.types
 
-class C extends A {
-    override def hello() = {
-        println("Hello from class C")
-    }
-}
+class C extends Bit (name = "C", size = 300, sign = false, min = 0, max = 2)

@@ -45,7 +45,6 @@ object Util {
     val namespaceString = namespace.replace(".", "/")
     val d = new File(directory + "/" + namespaceString)
     if (d.exists && d.isDirectory) {
-
       d.listFiles.filter(_.getName.endsWith(".class"))
         .map(namespace + "." + _.getName.replace(directory, "").replace(namespaceString, "")
           .replace(".class","")).toList

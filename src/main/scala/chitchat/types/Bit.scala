@@ -1,13 +1,6 @@
 package chitchat.types
 
-//import grapevineType.BottomType._
-//import util.conversion.{ByteArrayTool, BitSetTool}
-
-import scala.collection.BitSet
-
-abstract class Bit {
-  def size
-}
+class Bit(val size:Int, val name:String, val sign:Boolean, val min:Int, val max:Int)
 
 /*
   var bits:List[Int] = _
