@@ -12,7 +12,22 @@ package chitchat.types
   * @param min
   * @param max
   */
-class Bit(val name:String = "", var size:Int = 0, val signed:Boolean = false, val min:Int = 0, val max:Int = 0)
+class Bit(override val name:String = "",
+                   var size:Int = 0,
+                   val signed:Boolean = false,
+                   val min:Int = 0,
+                   val max:Int = 0) extends Base(name) {
+
+  override def encode(value: Any): Array[Byte] = {
+    val intValue = value.asInstanceOf[Int]
+
+    Array[Byte]()
+  }
+
+  override def decode(byteArray: Array[Byte]): Any = {
+    12
+  }
+}
 
 /*
   var bits:List[Int] = _

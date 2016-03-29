@@ -8,7 +8,7 @@ import util.file.Util._
 object Util {
 
   def getSystemTypeInstances() = {
-    List[chitchat.types.Bit](
+    List[chitchat.types.Base](
       new Byte,
       new UByte,
       new Date
