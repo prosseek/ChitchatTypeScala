@@ -1,6 +1,18 @@
 package chitchat.types
 
-class Bit(val size:Int, val name:String, val sign:Boolean, val min:Int, val max:Int)
+/**
+  *
+  * ==== Parameters ====
+  *
+  * size is defined as `var` as in encoded data type, the value is updated with summing all the sub elements.
+  *
+  * @param name
+  * @param size
+  * @param signed
+  * @param min
+  * @param max
+  */
+class Bit(val name:String = "", var size:Int = 0, val signed:Boolean = false, val min:Int = 0, val max:Int = 0)
 
 /*
   var bits:List[Int] = _

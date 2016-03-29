@@ -1,12 +1,16 @@
 package util.file
 
 import org.scalatest._
+//import java.io.File
+
 import Util._
 
 class TestUtil extends FunSuite {
   test ("getFileNames test") {
     // http://stackoverflow.com/questions/5285898/how-to-access-test-resources
+    //val currentDirectory = (new File(".")).getAbsoluteFile()
     val namespace = "chitchat.types"
+    //val directory = currentDirectory + "/src/test/resources/util/file/"
     val directory = "./src/test/resources/util/file/"
     val files = getFileNames(directory, namespace)
 
@@ -22,7 +26,9 @@ class TestUtil extends FunSuite {
     */
   test ("getClassInstances test") {
     // http://stackoverflow.com/questions/5285898/how-to-access-test-resources
+    //val currentDirectory = (new File(".")).getAbsoluteFile()
     val namespace = "chitchat.types"
+    //val directory = currentDirectory + "./src/test/resources/util/file/"
     val directory = "./src/test/resources/util/file/"
     val instantiations = getClassInstances[chitchat.types.Bit](directory, namespace)
 
