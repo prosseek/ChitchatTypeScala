@@ -2,25 +2,28 @@ package util.types
 
 import chitchat.types._
 import util.file.Util._
+
+import java.lang.{String => JString}
+
 /**
   * Created by smcho on 3/28/16.
   */
 object Util {
 
   def getSystemTypeInstances() = {
-    List[chitchat.types.Base](
+    List[chitchat.types.Base[_]](
       new Byte,
       new UByte,
       new Date
     )
   }
 
-  def getUserTypeInstances(directory:String, namespace:String = "chitchat.types") = {
+  def getUserTypeInstances(directory: JString, namespace: JString = "chitchat.types") = {
     // val directory = "./src/test/resources/util/file/"
     getClassInstances[chitchat.types.Bit](directory, namespace)
   }
 
-  def getTypeInstances(directory:String) = {
+  def getTypeInstances(directory:JString) = {
     getSystemTypeInstances() ++ getUserTypeInstances(directory)
   }
 }

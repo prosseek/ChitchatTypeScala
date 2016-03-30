@@ -7,9 +7,6 @@ class TestBit extends FunSuite
 {
   test ("simple") {
     val bit = new Bit(name = "bit", size = 10, min = 0, max = 4)
-    println(bit.decode(Array[Byte]()))
+    println(bit.decode(Array[scala.Byte](1, 0, 0, 0)))
   }
-
-
-
 }

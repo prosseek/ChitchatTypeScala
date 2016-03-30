@@ -1,7 +1,9 @@
 package chitchat.types
 
-/**
-  *
+import chitchat.types.{Byte => CByte}
+import util.conversion.ByteArrayTool._
+
+/**  *
   * ==== Parameters ====
   *
   * size is defined as `var` as in encoded data type, the value is updated with summing all the sub elements.
@@ -12,20 +14,22 @@ package chitchat.types
   * @param min
   * @param max
   */
-class Bit(override val name:String = "",
+class Bit(override val name:java.lang.String = "",
                    var size:Int = 0,
-                   val signed:Boolean = false,
+                   val signed:scala.Boolean = false,
                    val min:Int = 0,
-                   val max:Int = 0) extends Base(name) {
+                   val max:Int = 0) extends Base[scala.Int](name) {
 
-  override def encode(value: Any): Array[Byte] = {
-    val intValue = value.asInstanceOf[Int]
-
-    Array[Byte]()
+  override def encode(value: Int): Array[scala.Byte] = {
+    intToByteArray(value)
   }
 
-  override def decode(byteArray: Array[Byte]): Any = {
-    12
+  override def decode(byteArray: Array[scala.Byte]): scala.Int = {
+    byteArrayToInt(byteArray)
+  }
+
+  override def check(value: Int): scala.Boolean = {
+    (value <= max) && (value >= min)
   }
 }
 

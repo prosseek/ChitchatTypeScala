@@ -10,20 +10,21 @@ import scala.collection.mutable.{Map => MMap}
   * It also provides adjust function to fit the type value in the given bytearray with N elements.
   *
   *  - String (Pascal string)
-  *    - 1.1 stringToByteArray: `"hello" -> [5Hello]`
-  *    - 1.2 byteArrayToString: `5Hello.... -> "Hello"`
+  *    - stringToByteArray: `"hello" -> [5Hello]`
+  *    - byteArrayToString: `5Hello.... -> "Hello"`
   *
   *  - Int
-  *     - 2.1 Int (4 bytes)
-  *     - 2.2 Byte (1 byte)
-  *     - 2.3 Short (2 bytes)
-  *     - 2.4 Long (8 bytes)
+  *     - Long (8 bytes)
+  *     - Int (4 bytes)
+  *     - Byte (1 byte)
+  *     - Short (2 bytes)
   *
   *  - Double
-  *     - 3.1 Double (8 bytes)
-  *     - 3.2 Float (4 bytes)
+  *     - Double (8 bytes)
+  *     - Float (4 bytes)
   *
   *  - BitSet
+  *
   */
 
 object ByteArrayTool {
@@ -124,58 +125,55 @@ object ByteArrayTool {
     * Type Int to/from ByteArray
     ****************************************************************************/
 
-  // Int (4 bytes)
-  /** Returns byte array from the integer value
-    *
-    * @param x
-    * @return
-    */
-  def intToByteArray(x: Int) = ByteBuffer.allocate(4).putInt(x).array()
-  def intToByteArray(x: Int, goalSize: Int) : Array[Byte] = {
-    val value = intToByteArray(x)
-    // We do not need a sign extension (set as false), as the 4 bytes are encoded in big endian
-    // 1 -> 0:0:0:1 (From low to high)
-    // -2 -> -1:-1:-1:-2 (From low to high)
-    //
-    // intToByteArray(-2)
-    // a: Array[Byte] = Array(-1, -1, -1, -2)
-    // var b = adjust(a, 100)
-    // b: Array[Byte] = Array(-1, -1, -1, -2, 0, ... , 0, 0) <- meaningless to append -1s
-    adjust(value = value, goalSize = goalSize)
-  }
-  def byteArrayToInt(x: Array[Byte]) = {
-    ByteBuffer.wrap(x).getInt
-  }
-
   // byte
   def byteToByteArray(x: Byte) = ByteBuffer.allocate(1).put(x).array()
-  def byteToByteArray(x: Byte, size: Int) : Array[Byte] = {
-    val res = byteToByteArray(x)
-    adjust(value = res, goalSize = size, signExtension = true)
-  }
   def byteArrayToByte(x: Array[Byte]) = {
     ByteBuffer.wrap(x).get()
   }
 
   // short (2 bytes)
-  def shortToByteArray(x: Short) = ByteBuffer.allocate(2).putShort(x).array()
-  def shortToByteArray(x: Short, size: Int) : Array[Byte] = {
-    val res = shortToByteArray(x)
-    adjust(value = res, goalSize = size)
+  def shortToByteArray(x: Short, bigEndian:Boolean = true) = {
+    val res = ByteBuffer.allocate(2).putShort(x).array()
+    if (bigEndian) res else res.reverse
   }
-  def byteArrayToShort(x: Array[Byte]) = {
-    ByteBuffer.wrap(x).getShort
+  def byteArrayToShort(x: Array[Byte], bigEndian:Boolean = true) = {
+    if (x.size < 2) throw new RuntimeException("input Array[Byte] size is less than four bytes")
+    ByteBuffer.wrap(if (bigEndian) x else x.reverse).getShort
+  }
+
+  // Int (4 bytes)
+  /** Returns byte array from the integer value
+    *
+    * @param x
+    * @param bigEndian
+    * @return
+    */
+  def intToByteArray(x: Int, bigEndian:Boolean = true) = {
+    val res = ByteBuffer.allocate(4).putInt(x).array()
+    if (bigEndian) res else res.reverse
+  }
+
+  /** Returns integer value from 4 bytes or more byte array
+    *
+    * ==== Constraints ====
+    * The size of input byte array should be more than 4 bytes.
+    *
+    * @param x
+    * @return
+    */
+  def byteArrayToInt(x: Array[Byte], bigEndian:Boolean = true) = {
+    if (x.size < 4) throw new RuntimeException("input Array[Byte] size is less than four bytes")
+    ByteBuffer.wrap(if (bigEndian) x else x.reverse).getInt
   }
 
   // long (8 bytes)
-  def longToByteArray(x: Long) = ByteBuffer.allocate(8).putLong(x).array()
-  def longToByteArray(x: Long, size: Int) : Array[Byte] = {
-    val res = longToByteArray(x)
-    adjust(value = res, goalSize = size, signExtension = true)
+  def longToByteArray(x: Long, bigEndian:Boolean = true) = {
+    val res = ByteBuffer.allocate(8).putLong(x).array()
+    if (bigEndian) res else res.reverse
   }
-  // long
-  def byteArrayToLong(x: Array[Byte]) = {
-    ByteBuffer.wrap(x).getLong
+  def byteArrayToLong(x: Array[Byte], bigEndian:Boolean = true) = {
+    if (x.size < 8) throw new RuntimeException("input Array[Byte] size is less than four bytes")
+    ByteBuffer.wrap(if (bigEndian) x else x.reverse).getLong
   }
 
   /****************************************************************************

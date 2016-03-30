@@ -11,7 +11,7 @@ class TestEncoding extends FunSuite {
     assert(e.name == "Hello")
     assert(e.size == 300)
 
-    println(e.decode(Array[Byte]()))
+    println(e.decode(Array[scala.Byte]()))
 
   }
 }

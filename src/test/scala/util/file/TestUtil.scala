@@ -28,7 +28,6 @@ class TestUtil extends FunSuite {
     // http://stackoverflow.com/questions/5285898/how-to-access-test-resources
     //val currentDirectory = (new File(".")).getAbsoluteFile()
     val namespace = "chitchat.types"
-    //val directory = currentDirectory + "./src/test/resources/util/file/"
     val directory = "./src/test/resources/util/file/"
     val instantiations = getClassInstances[chitchat.types.Bit](directory, namespace)
 

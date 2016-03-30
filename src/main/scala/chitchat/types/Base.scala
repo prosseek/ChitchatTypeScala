@@ -1,9 +1,12 @@
 package chitchat.types
 
 /**
-  * Created by smcho on 3/28/16.
+  * The Base class is the root class of all types including system provided and user provided
+  *
+  * @param name
   */
-abstract class Base(val name:String = "") {
-  def encode(value:Any) : Array[Byte]
-  def decode(byteArray: Array[Byte]) : Any
+abstract class Base[T](val name:java.lang.String = "") {
+  def encode(value:T) : Array[scala.Byte]
+  def decode(byteArray: Array[scala.Byte]) : T
+  def check(value:T) : scala.Boolean
 }
