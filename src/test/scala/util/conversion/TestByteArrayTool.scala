@@ -4,6 +4,39 @@ import org.scalatest._
 import scala.collection.BitSet
 
 class TestByteArrayTool extends FunSuite {
+  // adjust
+  test ("adjust test shrink/big endian") {
+    var value = Array[Byte](0, 0, 0, 0, 1) // big endian
+    assert("0:1" == ByteArrayTool.adjust(value, goalSize = 2, bigEndian = true).mkString(":"))
+
+    value = Array[Byte](-1, -1, -1, -1, -2) // big endian
+    assert("-1:-2" == ByteArrayTool.adjust(value, goalSize = 2, bigEndian = true).mkString(":"))
+  }
+
+  test ("adjust test shrink/little endian") {
+    var value = Array[Byte](1, 0, 0, 0, 0) // big endian
+    assert("1:0" == ByteArrayTool.adjust(value, goalSize = 2, bigEndian = false).mkString(":"))
+
+    value = Array[Byte](-2, -1, -1, -1) // big endian
+    assert("-2:-1" == ByteArrayTool.adjust(value, goalSize = 2, bigEndian = false).mkString(":"))
+  }
+
+  test ("adjust test expand/big endian sign-expanded") {
+    var value = Array[Byte](0, 1) // big endian
+    assert("0:0:0:0:1" == ByteArrayTool.adjust(value, goalSize = 5, signExtension=true, bigEndian = true).mkString(":"))
+
+    value = Array[Byte](-1, -2) // big endian
+    assert("-1:-1:-1:-1:-2" == ByteArrayTool.adjust(value, goalSize = 5, signExtension=true, bigEndian = true).mkString(":"))
+  }
+
+//  test ("adjust test expand/little endian") {
+//    var value = Array[Byte](1, 0, 0, 0, 0) // big endian
+//    assert("1:0" == ByteArrayTool.adjust(value, goalSize = 2, bigEndian = false).mkString(":"))
+//
+//    value = Array[Byte](-2, -1, -1, -1) // big endian
+//    assert("-2:-1" == ByteArrayTool.adjust(value, goalSize = 2, bigEndian = false).mkString(":"))
+//  }
+
   // string
   test ("stringToByteArray") {
     var value = "Hello, world"

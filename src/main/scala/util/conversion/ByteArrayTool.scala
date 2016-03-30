@@ -33,26 +33,103 @@ object ByteArrayTool {
     * Adjust
     ****************************************************************************/
 
-  /** Given value of N bytes array, and given goalSize M >= N, append (M-N) to make the
-    * byte array size M.
+  /** Returns sign preserving,
+    *
+    * ==== Example ====
+    * {{{
+    * // shrink + signed + big endian
+    * x = 0:0:0:0:1 (value = 1, 5 bytes, signed, big endian)
+    *     ----- <- removed
+    * goal = 2 (shirink it into two bytes)
+    * adjust(x, 2) => 0:1
+    *
+    * x = 0xFF:0xFE (value = -2, 2 bytes, signed, big endian)
+    * goal = 1 byte (shirink it into one byte)
+    * adjust(x, 1) => 0xFE (still -2)
+    *
+    * // expand + signed + big endian
+    * x = 0:1 (value = 1, 2 bytes, signed, big endian)
+    * goal = 5 (expand it into five bytes)
+    * adjust(x, 5) => 0:0:0:0:1
+    *                 ------ <- added
+    *
+    * x = 0xFF:0xFE (value = -2, 2 bytes, signed, big endian)
+    * goal = 5 byte (expand it into five byte)
+    * adjust(x, 5) => 0xFF:0xFF:0xFF:0xFF:0xFE (still -2)
+    *                 -------------- <- aded
+    *
+    * // shrink + signed + little endian
+    * x = 1:0:0:0:0 (value = 1, 5 bytes, signed, little endian)
+    *        ------ <- removed
+    * goal = 2 (shirink it into two bytes)
+    * adjust(x, 2) => 1:0
+    *
+    * x = 0xFE:0xFF (value = -2, 2 bytes, signed, little endian)
+    *          ---- <- removed
+    * goal = 1 byte (shirink it into one byte)
+    * adjust(x, 1) => 0xFE (still -2)
+    *
+    * // expand + signed + little endian
+    * x = 1:0 (value = 1, 2 bytes, signed, little endian)
+    * goal = 5 (expand it into five bytes)
+    * adjust(x, 5) => 1:0:0:0:0
+    *                     ----- <- added
+    * x = 0xFE:0xFF (value = -2, 2 bytes, signed, little endian)
+    * goal = 5 byte (expand it into five byte)
+    * adjust(x, 5) => 0xFE:0xFF:0xFF:0xFF:0xFF (still -2)
+    *                           -------------- <- added
+    * }}}
+    *
+    *
+    * ==== Algorithm ====
+    *  1. Check if bytearray size is 0 or goal size is 0
+    *  2. If shrink remove the MSBs.
+    *     1. If big endian, MSBs are lower bytes (thus big endian).
+    *     2. If little endian, MSBs are higher bytes.
+    *  3. If expand add 0x00 to the higher bytes with positive value, and add 0xFF with negative value.
+    *
+    * ==== Discussion ====
+    * The algorithm removes the high bits when shrinking the bytearray.
+    * This is OK in practical as this function is used functions such as [[chitchat.types.Bit.encode]]
+    * The [[chitchat.types.Bit.encode]] functions reduces the bits only when the value to be encoded is within min/max.
+    * The min/max value is smaller than the shrinked byte array.
+    *
+    * ==== Warning ====
+    * 1. This function provides sign preserving expansion of byte array. It means the position of original bits are moved with big endian encoding.
+    * 2. With negative value, newly expanded data is filled with 0xFF.
     *
     * @param value
     * @param goalSize
     * @return Expanded byte array
     */
-  def adjust(value:Array[Byte], goalSize:Int, signExtension:Boolean = false) : Array[Byte] = {
-    val originalSize = value.size
-    if (goalSize == originalSize) return value // nothing to do when the goal size is the same as originalSize
-    if (goalSize < originalSize) throw new Exception(s"Goal size (${goalSize}}) should be larger than original size (${originalSize}})")
+  def adjust(value:Array[Byte], goalSize:Int, signExtension:Boolean = false, bigEndian:Boolean = true) : Array[Byte] = {
 
-    var v:Byte = 0
-    if (signExtension) {
-      // ByteBuffer uses BigEndian, so use the lower bytes to check the sign
-      if (value(0) < 0) v = (-1).toByte
+    // 1. check bytearray size and goal size
+    val originalSize = value.size
+    if (originalSize < 1 || goalSize < 1)
+      throw new Exception(s"origninal size and goal size should be more than one: goalSize($goalSize)/byteArraySize($originalSize)")
+    if (goalSize == originalSize) return value // nothing to do when the goal size is the same as originalSize
+
+    // shrink - remove the MSBs, it means slice the LSBs
+    if (goalSize < originalSize) {
+      // with little endian, MSBs are high bits, so LSBs are low bits
+      // case bigEndian => [orig - goalSize:orig] => orig points to the last item
+      // case littleEndian => [0:goalSize]
+      val start = if (bigEndian) (originalSize - goalSize) else 0
+      value.slice(start, start + goalSize)
     }
-    val head = Array.fill[Byte](goalSize - originalSize)(v)
-    // value is low bytes where head is high bytes
-    value ++ head
+    // expand - add to MSBs
+    else {
+      var v: Byte = 0
+      if (signExtension) {
+        val sign = if (bigEndian) (value(0) < 0) else (value(originalSize-1) < 127)
+        // ByteBuffer uses BigEndian, so use the lower bytes to check the sign
+        if (sign == true) v = -1
+      }
+      val head = Array.fill[Byte](goalSize - originalSize)(v)
+
+      if (bigEndian) head ++ value else value ++ head
+    }
   }
 
   /******************************************************************
@@ -99,14 +176,14 @@ object ByteArrayTool {
   /**
     * byteArray -> String
     *
-    * ==== idea ====
+    * ==== Idea ====
     *
     * {{{
     * 1. The byteArray that contains string has the format [Size:String:000000....],
     * 1. we can get from the Size (bytearray(0), we can extract the String.
     * }}}
     *
-    * ==== Refer ====
+    * ==== References ====
     *
     *  - detect the location of 0: [[http://stackoverflow.com/questions/23976309/trimming-byte-array-when-converting-byte-array-to-string-in-java-scala]]
     *
@@ -120,10 +197,6 @@ object ByteArrayTool {
       throw new RuntimeException(s"byte array size(${byteArray.size}} - 1) is smaller than (size)(${size}) ")
     new String(byteArray.slice(1, size + 1), "ASCII")
   }
-
-  /****************************************************************************
-    * Type Int to/from ByteArray
-    ****************************************************************************/
 
   // byte
   def byteToByteArray(x: Byte) = ByteBuffer.allocate(1).put(x).array()
@@ -236,6 +309,9 @@ object ByteArrayTool {
     * 5. Make the byte array and set the array with (group, shifted value)
     * }}}
     *
+    * ==== Warning ====
+    *  - It uses little endian encoding.
+    *
     * @param bitSet
     * @param goalSize
     * @return generated byteArray
@@ -260,7 +336,7 @@ object ByteArrayTool {
     if (goalSize == 0) {
       byteArray
     } else {
-      adjust(byteArray, goalSize = goalSize)
+      adjust(byteArray, goalSize = goalSize, signExtension = false, bigEndian = false)
     }
   }
 
