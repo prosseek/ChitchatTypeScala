@@ -7,6 +7,6 @@ package chitchat.types
   */
 abstract class Base[T](val name:java.lang.String = "") {
   def encode(value:T, bigEndian:scala.Boolean=true) : Array[scala.Byte]
-  def decode(byteArray: Array[scala.Byte], bigEndian:scala.Boolean=true) : T
+  def decode(byteArray: Array[scala.Byte], bigEndian:scala.Boolean=true) : Option[T]
   def check(value:T) : scala.Boolean
 }

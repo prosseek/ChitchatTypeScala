@@ -48,12 +48,28 @@ class Bit(override val name:java.lang.String = "",
       throw new RuntimeException(s"Bit.encode value error (check($value)) returns false: min($min)/max($max)")
     }
     val totalBytes = util.conversion.Util.getBytesForBits(size)
-    val byteArray = intToByteArray(value)
-    util.conversion.ByteArrayTool.adjust(byteArray, totalBytes)
+    val byteArray = intToByteArray(value, bigEndian = bigEndian) // make 4 bytes data
+    util.conversion.ByteArrayTool.adjust(byteArray, goalSize = totalBytes, bigEndian = bigEndian)
   }
 
-  override def decode(byteArray: Array[scala.Byte], bigEndian:scala.Boolean = true): scala.Int = {
-    byteArrayToInt(byteArray)
+  /** Returns the decoded byte array into Int type value
+    *
+    * ==== Why return scala.Int type value? ====
+    *  - We assume that the encoded value that is recovered is less than 32 bits integer value.
+    *  - The Bit type's decode method returns scala.Int.
+    *
+    * @param byteArray
+    * @param bigEndian
+    * @return
+    */
+
+  override def decode(byteArray: Array[scala.Byte], bigEndian:scala.Boolean = true): Option[scala.Int] = {
+    val totalBytes = util.conversion.Util.getBytesForBits(size)
+    if (totalBytes > byteArray.size)
+      throw new RuntimeException(s"byteArray size ${byteArray.size} is smaller to represent the vale in ${totalBytes}")
+    val adjustedByteArray = util.conversion.ByteArrayTool.adjust(byteArray, goalSize = 4, signExtension = signed, bigEndian = bigEndian)
+    val result = byteArrayToInt(adjustedByteArray)
+    if (check(result)) Some(result) else None
   }
 
   override def check(value: Int): scala.Boolean = {
