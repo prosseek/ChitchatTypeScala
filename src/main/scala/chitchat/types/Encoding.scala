@@ -9,10 +9,68 @@ package chitchat.types
   * @param name
   * @param elements
   */
-class Encoding(override val name:java.lang.String, val elements:Array[Bit]) extends Base[Seq[scala.Int]](name = name) {
+class Encoding(override val name:java.lang.String, val elements:Seq[Bit]) extends Base[Seq[scala.Int]](name = name) {
   def size = (0 /: elements)((acc, element) => acc + element.size)
 
-  override def encode(value: Seq[scala.Int], bigEndian:scala.Boolean = false): Array[scala.Byte] = ???
+  /** Returns bit adjusted bytearrays.
+    *
+    * ==== Why ====
+    * Encoded value from Bit.encode() method is byte aligned.
+    * However, when we aggregate multiple encoded values, we need to adjust them to save bytes.
+    *
+    * ==== Example ====
+    * {{{
+    *   val a = Bit("a", 5, false, 0, 3)
+    *   val b = Bit("b", 6, false, 0, 2)
+    *
+    *   a.encode(1) => XXX00001
+    *   b.endode(2) => XX
+    * }}}
+    *
+    * @param byteArrays
+    */
+  def stitch(byteArrays: Seq[Array[scala.Byte]]) = {
+
+  }
+
+  /** Returns byte array from input values in Seq[T] type.
+    *
+    * ==== Example ====
+    * {{{
+    *   val e = Encoding("encoding",
+    *                    List[Bit](
+    *                      new Bit("x", 4, true, max = 3, min = -4),
+    *                      new Bit("y", 5, false, max = 3, min = 0)))
+    *   val res = encode(List[scala.Int](1,2))
+    *   => total 16 bit (2 bytes) byte array x is used for makring patch (|0001|00010|xxxxxxx).
+    *                                                                      "x"  "y"   patch
+    * }}}
+    *
+    * ==== Algorithm ====
+    *  - Check if the elements and value has the same number of elements.
+    *  - Check if each element is within range.
+    *
+    * @param value Seq[scala.Int] type of data that contains N elements
+    * @param bigEndian We do not use endian in encoding class
+    * @return array byte to encode the value
+    */
+  override def encode(value: Seq[scala.Int], bigEndian:scala.Boolean = false): Array[scala.Byte] = {
+    // check size
+    if (value.size != elements.size) throw new RuntimeException(s"Value count ${value.size} is different from element count ${elements.size}")
+
+
+    val encodedSeq = elements.zip(value) map {
+      case (element, v) => {
+        if (!(element.check(v)))
+          throw new RuntimeException(s"value ${v} is not in range (${element.min}-${element.max}) of element ${element.name}")
+        element.encode(v)
+      }
+    }
+
+    stitch(encodedSeq)
+
+    null
+  }
   override def decode(byteArray: Array[scala.Byte], bigEndian:scala.Boolean = false): Option[Seq[scala.Int]] = {
     Some(List[scala.Int](1,2,3))
   }

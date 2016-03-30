@@ -6,9 +6,6 @@ import util.file.Util._
 
 import java.lang.{String => JString}
 
-/**
-  * Created by smcho on 3/28/16.
-  */
 object Util {
 
   def getSystemTypeInstances() = {
