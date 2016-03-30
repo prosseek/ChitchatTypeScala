@@ -1,4 +1,4 @@
-package chitchat.types
+package chitchat.types.encoding
 
 import org.scalatest._
 

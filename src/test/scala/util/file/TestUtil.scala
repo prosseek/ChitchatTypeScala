@@ -1,14 +1,25 @@
-package util.file
+//package util.file
+/*
+   I commented out the package because I sometimes have error message, but I don't know how to resolve this issue.
+
+   {{{
+    type Bit is not a member of package util.file.chitchat.types
+    [error]     val instantiations = getClassInstances[chitchat.types.Bit](directory, namespace)
+   }}}
+
+   I guess this is IntelliJ's bug.
+ */
 
 import org.scalatest._
-//import java.io.File
+import chitchat.types._
 
-import Util._
+import util.file.Util._
 
 class TestUtil extends FunSuite {
+
   test ("getFileNames test") {
     // http://stackoverflow.com/questions/5285898/how-to-access-test-resources
-    //val currentDirectory = (new File(".")).getAbsoluteFile()
+    // val currentDirectory = (new File(".")).getAbsoluteFile()
     val namespace = "chitchat.types"
     //val directory = currentDirectory + "/src/test/resources/util/file/"
     val directory = "./src/test/resources/util/file/"

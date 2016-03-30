@@ -1,5 +1,7 @@
 package chitchat.types
 
+import chitchat.types._
+
 import java.lang.{String => JString}
 /**
   * Created by smcho on 3/28/16.

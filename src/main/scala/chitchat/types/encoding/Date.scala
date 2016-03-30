@@ -1,4 +1,6 @@
-package chitchat.types
+package chitchat.types.encoding
+
+import chitchat.types._
 
 /**
   * Created by smcho on 3/28/16.

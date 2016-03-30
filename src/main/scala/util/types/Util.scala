@@ -1,6 +1,7 @@
 package util.types
 
-import chitchat.types._
+import chitchat.types.range._
+import chitchat.types.encoding._
 import util.file.Util._
 
 import java.lang.{String => JString}

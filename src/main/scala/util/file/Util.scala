@@ -40,7 +40,7 @@ object Util {
     * @return List[String] of the class names in the directory (given namespace prependes)
     */
 
-  private[file] def getFileNames(directory:String, namespace:String) = {
+  def getFileNames(directory:String, namespace:String) = {
     val files = ArrayBuffer[String]()
     val namespaceString = namespace.replace(".", "/")
     val d = new File(directory + "/" + namespaceString)

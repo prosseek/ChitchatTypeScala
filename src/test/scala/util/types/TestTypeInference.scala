@@ -1,4 +1,4 @@
-package chitchat.types
+package util.types
 
 import org.scalatest._
 
