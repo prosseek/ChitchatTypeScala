@@ -28,14 +28,14 @@ object BitSetTool {
     * {{{
     *  With Bitset of {0,1,2} in 3 bit => -1 (in 3 bit system 111 is -1)
     * }}}
-
-    * @param b
+ *
+ * @param bitset
     * @param bitWidth
     * @param sh
     * @return
     */
-  def bitSetToValue(b:BitSet, bitWidth:Int, sh:Int=0) : Int = {
-    val res = ((0 /: b) {(acc, input) => acc + (1 << (input - sh))})
+  def bitSetToValue(bitset:BitSet, bitWidth:Int, sh:Int=0) : Int = {
+    val res = ((0 /: bitset) { (acc, input) => acc + (1 << (input - sh))})
     val maxInt = scala.math.pow(2.0, bitWidth-1).toInt - 1
     if (res > maxInt) {
       val mask = (scala.math.pow(2.0, bitWidth).toInt)

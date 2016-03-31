@@ -7,15 +7,11 @@ class TestBit extends FunSuite
   test ("encode test") {
     // 10 bits (2 byte), but the bytearray size should be 1 byte
     val bit = new Bit(name = "bit", size = 10, min = 0, max = 4)
-    assert("3:0" == bit.encode(value = 3, bigEndian = false).mkString(":"))
-    assert("0:3" == bit.encode(value = 3, bigEndian = true).mkString(":"))
+    assert("0:3" == bit.encode(value = 3).mkString(":"))
 
     val bit2 = new Bit(name = "bit", size = 17, signed=true, min = -10, max = 10)
-    assert("-1:-1:-3" == bit2.encode(value = -3, bigEndian = true).mkString(":"))
-    assert("-1:-1:-2" == bit2.encode(value = -2, bigEndian = true).mkString(":"))
-
-    assert("-3:-1:-1" == bit2.encode(value = -3, bigEndian = false).mkString(":"))
-    assert("-2:-1:-1" == bit2.encode(value = -2, bigEndian = false).mkString(":"))
+    assert("-1:-1:-3" == bit2.encode(value = -3).mkString(":"))
+    assert("-1:-1:-2" == bit2.encode(value = -2).mkString(":"))
   }
 
   test ("decode test") {

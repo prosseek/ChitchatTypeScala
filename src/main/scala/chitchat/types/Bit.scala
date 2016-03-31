@@ -42,13 +42,13 @@ class Bit(override val name:java.lang.String = "",
     * @param value
     * @return
     */
-  override def encode(value: Int, bigEndian:scala.Boolean = true): Array[scala.Byte] = {
+  override def encode(value: Int): Array[scala.Byte] = {
     if (check(value) == false) {
       throw new RuntimeException(s"Bit.encode value error (check($value)) returns false: min($min)/max($max)")
     }
     val totalBytes = util.conversion.Util.getBytesForBits(size)
-    val byteArray = intToByteArray(value, bigEndian = bigEndian) // make 4 bytes data
-    util.conversion.ByteArrayTool.adjust(byteArray, goalSize = totalBytes, bigEndian = bigEndian)
+    val byteArray = intToByteArray(value) // make 4 bytes data
+    util.conversion.ByteArrayTool.adjust(byteArray, goalSize = totalBytes)
   }
 
   /** Returns the decoded byte array into Int type value
@@ -59,15 +59,14 @@ class Bit(override val name:java.lang.String = "",
     *  - When the value is not within range, it should return error condition. Option is used to indicate the condition.
     *
     * @param byteArray
-    * @param bigEndian
     * @return
     */
 
-  override def decode(byteArray: Array[scala.Byte], bigEndian:scala.Boolean = true): Option[scala.Int] = {
+  override def decode(byteArray: Array[scala.Byte]): Option[scala.Int] = {
     val totalBytes = util.conversion.Util.getBytesForBits(size)
     if (totalBytes > byteArray.size)
       throw new RuntimeException(s"byteArray size ${byteArray.size} is smaller to represent the vale in ${totalBytes}")
-    val adjustedByteArray = util.conversion.ByteArrayTool.adjust(byteArray, goalSize = 4, signExtension = signed, bigEndian = bigEndian)
+    val adjustedByteArray = util.conversion.ByteArrayTool.adjust(byteArray, goalSize = 4, signExtension = signed)
     val result = byteArrayToInt(adjustedByteArray)
     if (check(result)) Some(result) else None
   }
