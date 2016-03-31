@@ -1,6 +1,7 @@
 package chitchat.types
 
 import scala.collection.BitSet
+import scala.collection.mutable.ArrayBuffer
 
 /** Abstracts the encoded information such as time/date/location.
   *
@@ -13,6 +14,7 @@ import scala.collection.BitSet
   */
 class Encoding(override val name:java.lang.String, val elements:Seq[Bit]) extends Base[Seq[scala.Int]](name = name) {
   def size = (0 /: elements)((acc, element) => acc + element.size)
+  def sizes = elements.map(_.size)
 
   /** Returns byte array from input values in Seq[T] type.
     *
@@ -32,26 +34,51 @@ class Encoding(override val name:java.lang.String, val elements:Seq[Bit]) extend
     *  - Check if each element is within range.
     *
     * @param value Seq[scala.Int] type of data that contains N elements
-    * @param bigEndian We do not use endian in encoding class
     * @return array byte to encode the value
     */
-  override def encode(value: Seq[scala.Int], bigEndian:scala.Boolean = false): Array[scala.Byte] = {
+  override def encode(value: Seq[scala.Int]): Array[scala.Byte] = {
     // check size
     if (value.size != elements.size) throw new RuntimeException(s"Value count ${value.size} is different from element count ${elements.size}")
 
+    if (check(value) == false)
+      throw new RuntimeException(s"value ${value.mkString(s":")} is not in range ${elements.mkString(":")}")
     val encodedSeq = elements.zip(value) map {
       case (element, v) => {
-        if (!(element.check(v)))
-          throw new RuntimeException(s"value ${v} is not in range (${element.min}-${element.max}) of element ${element.name}")
         element.encode(v)
       }
     }
-    val sizes = elements.map(_.size)
 
     util.conversion.ByteArrayTool.stitch(encodedSeq, sizes)
   }
-  override def decode(byteArray: Array[scala.Byte], bigEndian:scala.Boolean = false): Option[Seq[scala.Int]] = {
-    Some(List[scala.Int](1,2,3))
+
+  override def decode(byteArray: Array[scala.Byte]): Option[Seq[scala.Int]] = {
+
+    val bitset = util.conversion.ByteArrayTool.byteArrayToBitSet(byteArray = byteArray)
+
+    var sumOfSize = 0
+
+    val elementsInBitset = ArrayBuffer[BitSet]()
+    elements.foreach {element =>
+      elementsInBitset += bitset.filter(i => i >= sumOfSize && i < (sumOfSize + element.size)).map(_ - sumOfSize)
+      sumOfSize += element.size
+    }
+
+    // elementsInBitset is in little endian order, so reverse is necessary
+    val results = elementsInBitset.zip(sizes).map {
+      case (bitset, size) => util.conversion.BitSetTool.bitSetToValue(bitset=bitset, bitWidth = size)
+    }
+
+    //Some(elementsInBitset.toList.zip(sizes).map(i => util.conversion.)
+    Some(Seq[scala.Int](results:_*))
   }
-  override def check(value: Seq[scala.Int]): scala.Boolean = ???
+
+  override def check(value: Seq[scala.Int]): scala.Boolean = {
+    elements.zip(value) map {
+      case (element, v) => {
+        if (!(element.check(v)))
+          return false
+      }
+    }
+    true
+  }
 }

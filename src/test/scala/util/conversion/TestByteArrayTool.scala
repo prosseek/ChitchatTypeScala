@@ -47,6 +47,14 @@ class TestByteArrayTool extends FunSuite {
     // assert(BitSet(0, 1, 2, 3, 4, 5, 6, 7, 8) == ByteArrayTool.stitch(Seq[Array[Byte]](byteArray1, byteArray2), Seq[Int](5,3)))
     assert("1:-1" == ByteArrayTool.stitch(Seq[Array[Byte]](byteArray1, byteArray2), Seq[Int](6,3)).mkString(":"))
   }
+  // stich for debugging
+  test ("stitch for debugging") {
+    var byteArray1 = Array[Byte](5)
+    var byteArray2 = Array[Byte](-10)
+    // bigendian
+    // -10:5 (value) => 10110:00101 => 10:11000101 => 2:
+    assert("2:-59" == ByteArrayTool.stitch(Seq[Array[Byte]](byteArray1, byteArray2), Seq[Int](5,5)).mkString(":"))
+  }
 
   // string
   test ("stringToByteArray") {
