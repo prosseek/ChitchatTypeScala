@@ -100,16 +100,6 @@ class TestByteArrayTool extends FunSuite {
     assert(value == a)
   }
 
-  test ("short endian check") {
-    var value = 1.toShort
-    val expected = Array[Byte](1, 0)
-    assert(expected.sameElements(ByteArrayTool.shortToByteArray(value, bigEndian = false)))
-    assert(value == ByteArrayTool.byteArrayToShort(expected, bigEndian = false))
-
-    value = Short.MinValue
-    assert(value == ByteArrayTool.byteArrayToShort(ByteArrayTool.shortToByteArray(value, false), false))
-  }
-
   // int
   test ("int to byte array and back test ") {
     var value = 0
@@ -133,16 +123,6 @@ class TestByteArrayTool extends FunSuite {
     assert(ByteArrayTool.byteArrayToInt(value) == 1)
   }
 
-  test ("int endian check") {
-    var value = 1.toInt
-    val expected = Array[Byte](1, 0, 0, 0)
-    assert(expected.sameElements(ByteArrayTool.intToByteArray(value, bigEndian = false)))
-    assert(value == ByteArrayTool.byteArrayToInt(expected, bigEndian = false))
-
-    value = Int.MinValue
-    assert(value == ByteArrayTool.byteArrayToInt(ByteArrayTool.intToByteArray(value, false), false))
-  }
-
   test("when byte array size is less than 4 bytes") {
     intercept[java.lang.RuntimeException] {
       var value = Array[Byte](0, 0, 1)
@@ -160,16 +140,6 @@ class TestByteArrayTool extends FunSuite {
     assert(value == ByteArrayTool.byteArrayToLong(ByteArrayTool.longToByteArray(value)))
     value = 12343434L
     assert(value == ByteArrayTool.byteArrayToLong(ByteArrayTool.longToByteArray(value)))
-  }
-
-  test ("long endian check") {
-    var value = 1.toLong
-    val expected = Array[Byte](1, 0, 0, 0, 0, 0, 0, 0)
-    assert(expected.sameElements(ByteArrayTool.longToByteArray(value, bigEndian = false)))
-    assert(value == ByteArrayTool.byteArrayToLong(expected, bigEndian = false))
-
-    value = Long.MinValue
-    assert(value == ByteArrayTool.byteArrayToLong(ByteArrayTool.longToByteArray(value, false), false))
   }
 
   test("when byte array size is less than 8 bytes") {
@@ -191,23 +161,17 @@ class TestByteArrayTool extends FunSuite {
     var y2 = ByteArrayTool.bitSetToByteArray(x, bigEndian = false)
     assert(y2.mkString(":") == "15:5:0:0:0:0:0:0:0:0:0:0:0:1")
 
-    assert(ByteArrayTool.byteArrayToBitSet(y1, bigEndian = true) == x)
-    assert(ByteArrayTool.byteArrayToBitSet(y2, bigEndian = false) == x)
+    assert(ByteArrayTool.byteArrayToBitSet(y1) == x)
 
     x = BitSet(0,1,2,3,4,5,6,7,8)
-    var y = ByteArrayTool.bitSetToByteArray(x, bigEndian = false)
-    assert(y.mkString(":") == "-1:1")
-    assert(ByteArrayTool.byteArrayToBitSet(y, bigEndian = false) == x)
+    var y = ByteArrayTool.bitSetToByteArray(x)
+    assert(y.mkString(":") == "1:-1")
+    assert(ByteArrayTool.byteArrayToBitSet(y) == x)
 
     x = BitSet(0)
-    y = ByteArrayTool.bitSetToByteArray(x, goalSize = 4, bigEndian = false)
-    assert(y.mkString(":") == "1:0:0:0") // LOW - HIGH bits
-    assert(ByteArrayTool.byteArrayToBitSet(y, bigEndian = false) == x)
-
-    x = BitSet(0)
-    y = ByteArrayTool.bitSetToByteArray(x, goalSize = 4, bigEndian = true)
+    y = ByteArrayTool.bitSetToByteArray(x, goalSize = 4)
     assert(y.mkString(":") == "0:0:0:1") // LOW - HIGH bits
-    assert(ByteArrayTool.byteArrayToBitSet(y, bigEndian = true) == x)
+    assert(ByteArrayTool.byteArrayToBitSet(y) == x)
 
     // special case when there is no 1 in the value
     x = BitSet()
@@ -221,11 +185,7 @@ class TestByteArrayTool extends FunSuite {
     val byteArray = Array[Byte](1,0,0,-1) //
 
     // For big endian, we read <= (right to left direction)
-    assert(BitSet(0, 1, 2, 3, 4, 5, 6, 7, 24) == ByteArrayTool.byteArrayToBitSet(byteArray = byteArray, bigEndian = true, shift = 0))
-
-    // for little endian, we read => direction
-    // The endianness is byte level, not bit level
-    assert(BitSet(0, 24, 25, 26, 27, 28, 29, 30, 31) == ByteArrayTool.byteArrayToBitSet(byteArray = byteArray, bigEndian = false, shift = 0))
+    assert(BitSet(0, 1, 2, 3, 4, 5, 6, 7, 24) == ByteArrayTool.byteArrayToBitSet(byteArray = byteArray, shift = 0))
   }
 
   // double

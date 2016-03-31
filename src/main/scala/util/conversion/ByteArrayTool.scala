@@ -166,13 +166,13 @@ object ByteArrayTool {
     * @param byteArrays
     * @param sizes
     */
-  def stitch(byteArrays: Seq[Array[scala.Byte]], sizes: Seq[Int], bigEndian:Boolean = true) = {
+  def stitch(byteArrays: Seq[Array[scala.Byte]], sizes: Seq[Int]) = {
 
     var res = BitSet()
     var totalSize = 0
     byteArrays.zip(sizes) foreach {
       case (byteArray, size) => {
-        val r = byteArrayToBitSet(byteArray = byteArray, bigEndian = bigEndian)
+        val r = byteArrayToBitSet(byteArray = byteArray)
         // add the bits only smaller than size
         // ex) size == 3, r == (0,1,2,3,4), we only use (0,1,2)
         val modifiedValue = r.filter( _ < size).map(_ + totalSize)
@@ -258,25 +258,22 @@ object ByteArrayTool {
   }
 
   // short (2 bytes)
-  def shortToByteArray(x: Short, bigEndian:Boolean = true) = {
-    val res = ByteBuffer.allocate(2).putShort(x).array()
-    if (bigEndian) res else res.reverse
+  def shortToByteArray(x: Short) = {
+    ByteBuffer.allocate(2).putShort(x).array()
   }
-  def byteArrayToShort(x: Array[Byte], bigEndian:Boolean = true) = {
+  def byteArrayToShort(x: Array[Byte]) = {
     if (x.size < 2) throw new RuntimeException("input Array[Byte] size is less than four bytes")
-    ByteBuffer.wrap(if (bigEndian) x else x.reverse).getShort
+    ByteBuffer.wrap(x).getShort
   }
 
   // Int (4 bytes)
   /** Returns byte array from the integer value
     *
     * @param x
-    * @param bigEndian
     * @return
     */
-  def intToByteArray(x: Int, bigEndian:Boolean = true) = {
-    val res = ByteBuffer.allocate(4).putInt(x).array()
-    if (bigEndian) res else res.reverse
+  def intToByteArray(x: Int) = {
+    ByteBuffer.allocate(4).putInt(x).array()
   }
 
   /** Returns integer value from 4 bytes or more byte array
@@ -287,19 +284,18 @@ object ByteArrayTool {
     * @param x
     * @return
     */
-  def byteArrayToInt(x: Array[Byte], bigEndian:Boolean = true) = {
+  def byteArrayToInt(x: Array[Byte]) = {
     if (x.size < 4) throw new RuntimeException("input Array[Byte] size is less than four bytes")
-    ByteBuffer.wrap(if (bigEndian) x else x.reverse).getInt
+    ByteBuffer.wrap(x).getInt
   }
 
   // long (8 bytes)
-  def longToByteArray(x: Long, bigEndian:Boolean = true) = {
-    val res = ByteBuffer.allocate(8).putLong(x).array()
-    if (bigEndian) res else res.reverse
+  def longToByteArray(x: Long) = {
+    ByteBuffer.allocate(8).putLong(x).array()
   }
-  def byteArrayToLong(x: Array[Byte], bigEndian:Boolean = true) = {
+  def byteArrayToLong(x: Array[Byte]) = {
     if (x.size < 8) throw new RuntimeException("input Array[Byte] size is less than four bytes")
-    ByteBuffer.wrap(if (bigEndian) x else x.reverse).getLong
+    ByteBuffer.wrap(x).getLong
   }
 
   /****************************************************************************
@@ -423,9 +419,10 @@ object ByteArrayTool {
     * @param shift
     * @return generated BitSet
     */
-  def byteArrayToBitSet(byteArray:Array[Byte], bigEndian:Boolean = true, shift:Int = 0) = {
+  def byteArrayToBitSet(byteArray:Array[Byte], shift:Int = 0) = {
 
-    val arrangedByteArray = if (bigEndian) byteArray.reverse else byteArray
+    // we use only big endian, so to make bitset we need to reveres
+    val arrangedByteArray = byteArray.reverse
 
     var res = ArrayBuffer[Int]()
     for ((v,i) <- arrangedByteArray.zipWithIndex if v != 0) {
