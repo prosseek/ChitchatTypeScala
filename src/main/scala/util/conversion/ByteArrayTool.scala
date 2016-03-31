@@ -6,8 +6,6 @@ import scala.collection.BitSet
 import scala.collection.mutable.ArrayBuffer
 import scala.collection.mutable.{Map => MMap}
 
-import util.conversion.ByteArrayTool._
-
 /** ByteArrayTool module contains bytearray (Array[Byte]) from/to Scala data types
   * It also provides adjust function to fit the type value in the given bytearray with N elements.
   *

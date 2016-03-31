@@ -33,8 +33,7 @@ class TestByteArrayTool extends FunSuite {
   test ("stitch test") {
     var byteArray1 = Array[Byte](1,0,0,-1) // 4 bytes, big-endian, I'll use only 3 bits (ignore 1, and high bits of -1 (0xFF))
     var byteArray2 = Array[Byte](0,0,7) // 3 bytes, big-endian, only
-    // assert(BitSet(0, 1, 2, 3, 4, 5) == ByteArrayTool.stitch(Seq[Array[Byte]](byteArray1, byteArray2), Seq[Int](3,3)))
-
+    // BitSet(0, 1, 2, 3, 4, 5)
     assert("63" == ByteArrayTool.stitch(Seq[Array[Byte]](byteArray1, byteArray2), Seq[Int](3,3)).mkString(":"))
     // 2^6 - 1 == 63
     byteArray1 = Array[Byte](1,0,0,-1) // 4 bytes, big-endian, I'll use only 3 bits (ignore 1, and high bits of -1 (0xFF))
