@@ -1,6 +1,8 @@
 package util.types
 
-class TypeInference {
+class TypeInference(val typesDirectory : String = "") {
+
+  val types = Util.getTypeInstances(typesDirectory)
 
   def getType(label:String, value:Array[Byte] = null) = {
     if (value != null) {
@@ -9,6 +11,8 @@ class TypeInference {
   }
 
   private def getTypeFromValue(value:Array[Byte]) = {
+    // check if the value can be interpreted as string
+    //if (types("string"))
     "string"
   }
 }

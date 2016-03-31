@@ -1,3 +1,3 @@
 package chitchat.types
 
-class C extends Bit (name = "C", size = 300)
+class C extends Range (name = "range_C", size = 300)

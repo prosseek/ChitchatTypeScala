@@ -12,7 +12,7 @@ import scala.collection.mutable.ArrayBuffer
   * @param name
   * @param elements
   */
-class Encoding(override val name:java.lang.String, val elements:Seq[Bit]) extends Base[Seq[scala.Int]](name = name) {
+class Encoding(override val name:java.lang.String, val elements:Seq[Range]) extends Base[Seq[scala.Int]](name = name) {
   def size = (0 /: elements)((acc, element) => acc + element.size)
   def sizes = elements.map(_.size)
   def ranges = elements.map(i => (i.min, i.max))

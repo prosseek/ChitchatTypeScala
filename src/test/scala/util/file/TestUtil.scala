@@ -41,13 +41,13 @@ class TestUtil extends FunSuite {
     //val currentDirectory = (new File(".")).getAbsoluteFile()
     val namespace = "chitchat.types"
     val directory = "./src/test/resources/util/file/"
-    val instantiations = getClassInstances[chitchat.types.Bit](directory, namespace)
+    val instantiations = getClassInstances[chitchat.types.Base[_]](directory, namespace)
 
     instantiations.foreach { instance =>
       instance.name match {
-        case "A" => assert(instance.size == 100)
-        case "B" => assert(instance.size == 200)
-        case "C" => assert(instance.size == 300)
+        case "range_A" => assert(instance.asInstanceOf[Range].size == 100)
+        case "range_B" => assert(instance.asInstanceOf[Range].size == 200)
+        case "range_C" => assert(instance.asInstanceOf[Range].size == 300)
       }
     }
   }

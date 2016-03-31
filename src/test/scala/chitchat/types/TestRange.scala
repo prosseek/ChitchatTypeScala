@@ -2,20 +2,20 @@ package chitchat.types
 
 import org.scalatest.FunSuite
 
-class TestBit extends FunSuite
+class TestRange extends FunSuite
 {
   test ("encode test") {
     // 10 bits (2 byte), but the bytearray size should be 1 byte
-    val bit = new Bit(name = "bit", size = 10, min = 0, max = 4)
+    val bit = new Range(name = "bit", size = 10, min = 0, max = 4)
     assert("0:3" == bit.encode(value = 3).mkString(":"))
 
-    val bit2 = new Bit(name = "bit", size = 17, signed=true, min = -10, max = 10)
+    val bit2 = new Range(name = "bit", size = 17, signed=true, min = -10, max = 10)
     assert("-1:-1:-3" == bit2.encode(value = -3).mkString(":"))
     assert("-1:-1:-2" == bit2.encode(value = -2).mkString(":"))
   }
 
   test ("decode test") {
-    val bit = new Bit(name = "bit", size = 10, min = -20, max = 20, signed = true)
+    val bit = new Range(name = "bit", size = 10, min = -20, max = 20, signed = true)
     var byteArray = Array[scala.Byte](0, 2)
     var res = bit.decode(byteArray = byteArray)
     assert(res.get == 2)
@@ -54,7 +54,7 @@ class TestBit extends FunSuite
   }
 
   test ("check test") {
-    val bit = new Bit(name = "bit", size = 10, min = -20, max = 20, signed = true)
+    val bit = new Range(name = "bit", size = 10, min = -20, max = 20, signed = true)
     assert(bit.check(0))
     assert(bit.check(-20))
     assert(bit.check(20))

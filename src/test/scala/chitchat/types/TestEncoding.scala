@@ -7,8 +7,8 @@ import org.scalatest._
   */
 class TestEncoding extends FunSuite {
   test ("encoding test") {
-    val e = new Encoding(name = "Hello", Array[Bit](new Bit(name="a", size=5, signed = false, min = 0, max = 10),
-                                                    new Bit(name="b", size=5, signed = true, min = -10, max = 10)))
+    val e = new Encoding(name = "Hello", Array[Range](new Range(name="a", size=5, signed = false, min = 0, max = 10),
+                                                    new Range(name="b", size=5, signed = true, min = -10, max = 10)))
     assert(e.name == "Hello")
     assert(e.size == 10)
 
@@ -19,8 +19,8 @@ class TestEncoding extends FunSuite {
   }
 
   test ("decoding test") {
-    val e = new Encoding(name = "Hello", Array[Bit](new Bit(name="a", size=5, signed = false, min = 0, max = 10),
-                                                    new Bit(name="b", size=5, signed = true, min = -10, max = 10)))
+    val e = new Encoding(name = "Hello", Array[Range](new Range(name="a", size=5, signed = false, min = 0, max = 10),
+                                                    new Range(name="b", size=5, signed = true, min = -10, max = 10)))
 
     val byteArray = Array[Byte](2, -59)
     assert(e.decode(byteArray).get.toList == List(5, -10))

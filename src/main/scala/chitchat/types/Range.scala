@@ -13,11 +13,11 @@ import util.conversion.ByteArrayTool._
   * @param min
   * @param max
   */
-class Bit(override val name:java.lang.String = "",
-                   var size:Int = 0,
-                   val signed:scala.Boolean = false,
-                   val min:Int = 0,
-                   val max:Int = 0) extends Base[scala.Int](name) {
+class Range(override val name:java.lang.String = "",
+            var size:Int = 0,
+            val signed:scala.Boolean = false,
+            val min:Int = 0,
+            val max:Int = 0) extends Base[scala.Int](name) {
 
   /** Returns Array[Byte] from the given value
     *

@@ -94,8 +94,8 @@ object ByteArrayTool {
     *
     * ==== Discussion ====
     * The algorithm removes the high bits when shrinking the bytearray.
-    * This is OK in practical as this function is used functions such as [[chitchat.types.Bit.encode]]
-    * The [[chitchat.types.Bit.encode]] functions reduces the bits only when the value to be encoded is within min/max.
+    * This is OK in practical as this function is used functions such as [[chitchat.types.Range.encode]]
+    * The [[chitchat.types.Range.encode]] functions reduces the bits only when the value to be encoded is within min/max.
     * The min/max value is smaller than the shrinked byte array.
     *
     * ==== Warning ====

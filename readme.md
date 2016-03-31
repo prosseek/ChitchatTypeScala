@@ -1,3 +1,10 @@
+### [2016/03/31]03:02PM
+
+User defined type's name should indicate if the type is range type or encoded type from its name.
+
+    * range_XYZ // this name indicates the type is in Bit
+    * encoded_ZYZ // this name indicates the type is in Encoded
+
 ### [2016/03/25]10:00PM
 
 Execute test with the generated jar file. 
