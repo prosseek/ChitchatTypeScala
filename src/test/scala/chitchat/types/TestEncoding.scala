@@ -25,4 +25,5 @@ class TestEncoding extends FunSuite {
     val byteArray = Array[Byte](2, -59)
     assert(e.decode(byteArray).get.toList == List(5, -10))
   }
+
 }
