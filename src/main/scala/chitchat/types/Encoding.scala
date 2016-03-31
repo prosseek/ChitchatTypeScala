@@ -15,6 +15,8 @@ import scala.collection.mutable.ArrayBuffer
 class Encoding(override val name:java.lang.String, val elements:Seq[Bit]) extends Base[Seq[scala.Int]](name = name) {
   def size = (0 /: elements)((acc, element) => acc + element.size)
   def sizes = elements.map(_.size)
+  def ranges = elements.map(i => (i.min, i.max))
+  def signs = elements.map(i => i.signed)
 
   /** Returns byte array from input values in Seq[T] type.
     *
@@ -41,7 +43,7 @@ class Encoding(override val name:java.lang.String, val elements:Seq[Bit]) extend
     if (value.size != elements.size) throw new RuntimeException(s"Value count ${value.size} is different from element count ${elements.size}")
 
     if (check(value) == false)
-      throw new RuntimeException(s"value ${value.mkString(s":")} is not in range ${elements.mkString(":")}")
+      throw new RuntimeException(s"value ${value.mkString(s":")} is not in range ${ranges.mkString(":")}")
     val encodedSeq = elements.zip(value) map {
       case (element, v) => {
         element.encode(v)
@@ -64,8 +66,9 @@ class Encoding(override val name:java.lang.String, val elements:Seq[Bit]) extend
     }
 
     // elementsInBitset is in little endian order, so reverse is necessary
-    val results = elementsInBitset.zip(sizes).map {
-      case (bitset, size) => util.conversion.BitSetTool.bitSetToValue(bitset=bitset, bitWidth = size)
+    val results = elementsInBitset.zip(elements).map {
+      case (bitset, element) =>
+        util.conversion.BitSetTool.bitSetToValue(bitset=bitset, bitWidth = element.size, signed = element.signed)
     }
 
     //Some(elementsInBitset.toList.zip(sizes).map(i => util.conversion.)

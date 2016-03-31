@@ -34,14 +34,19 @@ object BitSetTool {
     * @param sh
     * @return
     */
-  def bitSetToValue(bitset:BitSet, bitWidth:Int, sh:Int=0) : Int = {
+  def bitSetToValue(bitset:BitSet, bitWidth:Int, signed:Boolean=true, sh:Int=0) : Int = {
     val res = ((0 /: bitset) { (acc, input) => acc + (1 << (input - sh))})
     val maxInt = scala.math.pow(2.0, bitWidth-1).toInt - 1
-    if (res > maxInt) {
-      val mask = (scala.math.pow(2.0, bitWidth).toInt)
-      res - mask
+
+    if (signed) {
+      if (res > maxInt) {
+        val mask = (scala.math.pow(2.0, bitWidth).toInt)
+        res - mask
+      }
+      else
+        res
     }
-    else
+    else // if not signed
       res
   }
 
