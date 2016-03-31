@@ -11,4 +11,10 @@ class TestString extends FunSuite
 
     assert(pstring.decode(pstring.encode("Hello")).get == "Hello")
   }
+
+  test ("Wrong string") {
+    val pstring = new String
+    val str = Array[Byte](5, 71, 0, 0, 1, 1, 0)
+    assert(pstring.decode(str).isEmpty)
+  }
 }

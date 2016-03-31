@@ -64,9 +64,22 @@ class Range(override val name:java.lang.String = "",
 
   override def decode(byteArray: Array[scala.Byte]): Option[scala.Int] = {
     val totalBytes = util.conversion.Util.getBytesForBits(size)
+
+    // 1. The byteArray should have enough room to be decoded
+    // totalBytes to represent the value is (for example) 10 bytes.
+    // However, the byteArray.size is 9 bytes. This means the byteArray cannot be decoded.
     if (totalBytes > byteArray.size)
-      throw new RuntimeException(s"byteArray size ${byteArray.size} is smaller to represent the vale in ${totalBytes}")
-    val adjustedByteArray = util.conversion.ByteArrayTool.adjust(byteArray, goalSize = 4, signExtension = signed)
+      return None
+
+    // 2. The excessive bytes should be 0
+    val expectedZeroValues = byteArray.slice(totalBytes, byteArray.size)
+    expectedZeroValues.foreach { byte =>
+      if (!(byte == 0)) return None
+    }
+
+    // 3. The value should be within range
+    val value = byteArray.slice(0, totalBytes)
+    val adjustedByteArray = util.conversion.ByteArrayTool.adjust(value, goalSize = 4, signExtension = signed)
     val result = byteArrayToInt(adjustedByteArray)
     if (check(result)) Some(result) else None
   }

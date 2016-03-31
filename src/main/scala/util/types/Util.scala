@@ -43,7 +43,7 @@ object Util {
     mmap
   }
 
-  def getTypeInstances(directory:JString) = {
+  def getTypeInstances(directory:JString) : Map[JString, chitchat.types.Base[_]] = {
     getSystemTypeInstances() ++ getUserTypeInstances(directory)
   }
 }

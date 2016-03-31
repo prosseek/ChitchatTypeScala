@@ -20,7 +20,7 @@ class TestRange extends FunSuite
     var res = bit.decode(byteArray = byteArray)
     assert(res.get == 2)
 
-    byteArray = Array[scala.Byte](0, 0, 11)
+    byteArray = Array[scala.Byte](0, 11, 0) // High bytes should be zero
     res = bit.decode(byteArray = byteArray)
     assert(res.get == 11)
 
@@ -44,13 +44,20 @@ class TestRange extends FunSuite
     res = bit.decode(byteArray = byteArray)
     assert(res.get == -2)
 
-    byteArray = Array[scala.Byte](-1, -1, -10) // 3 byte negative value check
+    byteArray = Array[scala.Byte](-1, -10, 0) // 3 byte negative value check
     res = bit.decode(byteArray = byteArray)
     assert(res.get == -10)
 
-    byteArray = Array[scala.Byte](-1, -1, -1, -10) // 3 byte negative value check
+    byteArray = Array[scala.Byte](-1, -10, 0, 0) // 3 byte negative value check
     res = bit.decode(byteArray = byteArray)
     assert(res.get == -10)
+  }
+
+  test ("decoding errors") {
+    val bit = new Range(name = "bit", size = 10, min = -20, max = 20, signed = true)
+    var byteArray = Array[scala.Byte](-1, -10, 0, 1) // high bytes should always be zero
+    var res = bit.decode(byteArray = byteArray)
+    assert(res.isEmpty)
   }
 
   test ("check test") {

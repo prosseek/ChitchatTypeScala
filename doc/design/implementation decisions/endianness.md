@@ -30,3 +30,7 @@ The reverse can be implmented with a String object instantiation.
 We don't use endian at the bit level, we use endianness only at byte level.
 
     12:34 -> the value 12 and 34 is big endian.
+
+### Policy change [2016/03/31]04:27PM
+I don't use endianness, always use big endian format.
+I have adjust function that understands the endianness, but it's for making the function as general as possible.

@@ -25,6 +25,7 @@ class TestUtil extends FunSuite {
     userMap.foreach {
       case (key, value) =>
         key match {
+          // from the name we know that the type inherits from Rnage so we can use the asInstanceOf
           case "range_A" => assert(value.asInstanceOf[chitchat.types.Range].size == 100)
           case "range_B" => assert(value.asInstanceOf[chitchat.types.Range].size == 200)
           case "range_C" => assert(value.asInstanceOf[chitchat.types.Range].size == 300)

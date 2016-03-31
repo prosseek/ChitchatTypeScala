@@ -1,9 +1,8 @@
-### [2016/03/31]03:02PM
+### [2016/03/31]04:24PM
+When you have error in unit test `util.file.TestUtil`, always check that the
+directory `./src/test/resources/util/file` is in classpath.
 
-User defined type's name should indicate if the type is range type or encoded type from its name.
-
-    * range_XYZ // this name indicates the type is in Bit
-    * encoded_ZYZ // this name indicates the type is in Encoded
+You can check that from `Project Structure/Modules/Dependencies`
 
 ### [2016/03/25]10:00PM
 
