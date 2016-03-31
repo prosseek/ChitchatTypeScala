@@ -39,7 +39,6 @@ class Encoding(override val name:java.lang.String, val elements:Seq[Bit]) extend
     // check size
     if (value.size != elements.size) throw new RuntimeException(s"Value count ${value.size} is different from element count ${elements.size}")
 
-
     val encodedSeq = elements.zip(value) map {
       case (element, v) => {
         if (!(element.check(v)))
@@ -47,10 +46,9 @@ class Encoding(override val name:java.lang.String, val elements:Seq[Bit]) extend
         element.encode(v)
       }
     }
+    val sizes = elements.map(_.size)
 
-    //stitch(encodedSeq)
-
-    null
+    util.conversion.ByteArrayTool.stitch(encodedSeq, sizes)
   }
   override def decode(byteArray: Array[scala.Byte], bigEndian:scala.Boolean = false): Option[Seq[scala.Int]] = {
     Some(List[scala.Int](1,2,3))

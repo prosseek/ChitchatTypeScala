@@ -182,7 +182,8 @@ object ByteArrayTool {
         totalSize += size
       }
     }
-    res
+    val goalSize = util.conversion.Util.getBytesForBits(totalSize)
+    bitSetToByteArray(res, goalSize)
   }
 
   /******************************************************************
