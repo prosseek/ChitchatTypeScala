@@ -1,5 +1,7 @@
 package chitchat.types
 
+import scala.collection.BitSet
+
 /** Abstracts the encoded information such as time/date/location.
   *
   * For example, time has three information in it: hour, minute, and second.
@@ -11,27 +13,6 @@ package chitchat.types
   */
 class Encoding(override val name:java.lang.String, val elements:Seq[Bit]) extends Base[Seq[scala.Int]](name = name) {
   def size = (0 /: elements)((acc, element) => acc + element.size)
-
-  /** Returns bit adjusted bytearrays.
-    *
-    * ==== Why ====
-    * Encoded value from Bit.encode() method is byte aligned.
-    * However, when we aggregate multiple encoded values, we need to adjust them to save bytes.
-    *
-    * ==== Example ====
-    * {{{
-    *   val a = Bit("a", 5, false, 0, 3)
-    *   val b = Bit("b", 6, false, 0, 2)
-    *
-    *   a.encode(1) => XXX00001
-    *   b.endode(2) => XX
-    * }}}
-    *
-    * @param byteArrays
-    */
-  def stitch(byteArrays: Seq[Array[scala.Byte]]) = {
-
-  }
 
   /** Returns byte array from input values in Seq[T] type.
     *
@@ -67,7 +48,7 @@ class Encoding(override val name:java.lang.String, val elements:Seq[Bit]) extend
       }
     }
 
-    stitch(encodedSeq)
+    //stitch(encodedSeq)
 
     null
   }

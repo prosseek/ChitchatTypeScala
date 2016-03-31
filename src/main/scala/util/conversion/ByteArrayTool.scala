@@ -9,6 +9,10 @@ import scala.collection.mutable.{Map => MMap}
 /** ByteArrayTool module contains bytearray (Array[Byte]) from/to Scala data types
   * It also provides adjust function to fit the type value in the given bytearray with N elements.
   *
+  *  - Utility
+  *    - adjust
+  *    - stitch
+  *
   *  - String (Pascal string)
   *    - stringToByteArray: `"hello" -> [5Hello]`
   *    - byteArrayToString: `5Hello.... -> "Hello"`
@@ -130,6 +134,43 @@ object ByteArrayTool {
 
       if (bigEndian) head ++ value else value ++ head
     }
+  }
+
+  /** Returns bit adjusted bytearrays.
+    *
+    * ==== Why ====
+    * Encoded value from Bit.encode() method is byte aligned.
+    * However, when we aggregate multiple encoded values, we need to adjust them to save bytes.
+    *
+    * ==== Example ====
+    * {{{
+    *   val a = Bit("a", 5, false, 0, 2)
+    *   val b = Bit("b", 6, false, 0, 1)
+    *
+    *   Let's say we encode the value with big endian (default)
+    *
+    *   a.encode(2) => XXX00010
+    *   b.endode(1) => XX000001
+    *
+    *   The stiched bytearray uses little endian.
+    *
+    *   stich(a.encoded(1), b.encode(2)) => 01000100000PPPPP
+    *                                       aaaaabbbbbb-----
+    * }}}
+    *
+    * ==== Algorithm ====
+    * 1. change byte array -> BitSet
+    * 2. add offset that starts with 0, the Nth offset starts from the sum of previous byte array sizes
+    * 3. revert it back to byte array
+    *
+    *
+    * @param byteArrays
+    */
+  def stitch(byteArrays: Seq[Array[scala.Byte]]) = {
+    //    (BitSet() /: byteArrays) { (acc, byteArray) =>
+    //      acc ++ util.conversion.ByteArrayTool.byteArrayToBitSet(byteArray, sh
+    //    }
+    null
   }
 
   /******************************************************************
@@ -359,13 +400,19 @@ object ByteArrayTool {
     *    the index*8 is added to the results
     * }}}
     *
+    * ==== Why shift parameter? ====
+    *  - [[util.conversion.ByteArrayTool.stitch]] function calls this function.
+    *    The values should be shifted for the stitch operation.
+    *
     * @param byteArray
+    * @param shift
     * @return generated BitSet
     */
-  def byteArrayToBitSet(byteArray:Array[Byte]) = {
+  // TODO: Check if this function is necessary
+  def byteArrayToBitSet(byteArray:Array[Byte], bigEndian:Boolean = true, shift:Int = 0) = {
     var res = ArrayBuffer[Int]()
     for ((v,i) <- byteArray.zipWithIndex if v != 0) {
-      res.appendAll(BitSetTool.byteToBitSet(v).toArray.map(_ + 8*i))
+      res.appendAll(BitSetTool.byteToBitSet(value = v, bigEndian = bigEndian, shift = shift).toArray.map(_ + 8*i))
     }
     scala.collection.immutable.BitSet(res: _*)
   }

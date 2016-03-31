@@ -7,6 +7,9 @@ import scala.collection.BitSet
  * BitSet uses a set of location to indicate a number.
  * 0 => 1 (as 0th location is set to 1)
  */
+
+//   def byteToBitSet(x:Byte, valueBitwidth:Int = 8, filterBitwidth:Int = 8, bigEndian:Boolean = true, shift:Int = 0) = {
+
 class TestBitSetTool extends FunSuite {
   test ("byteToBitSet test") {
     // when all the bits are 1, the value is -1
@@ -16,22 +19,32 @@ class TestBitSetTool extends FunSuite {
     // when the first (0th) bit is set, the value is 1 == 2^0
     assert(BitSetTool.byteToBitSet(1) == BitSet(0))
   }
+
   test ("byteToBitSet with shift test") {
-    assert(BitSetTool.byteToBitSet(-1, 8) == BitSet(8,9,10,11,12,13,14,15))
-    assert(BitSetTool.byteToBitSet(0, 8) == BitSet())
-    assert(BitSetTool.byteToBitSet(1, 8) == BitSet(8))
-    // 1 = 2^0 => 0
-    assert(BitSetTool.byteToBitSet(1) == BitSet(0))
-  }
-  test("bitSetToByte") {
-    assert(BitSetTool.bitSetToByte(BitSet(0,1,2,3)) == 15)
-    assert(BitSetTool.bitSetToByte(BitSet(0,1,2,3,4,5,6,7)) == -1)
+    assert(BitSetTool.byteToBitSet(value = -1, shift = 8) == BitSet(8,9,10,11,12,13,14,15))
+    assert(BitSetTool.byteToBitSet(0, shift = 8) == BitSet())
+    assert(BitSetTool.byteToBitSet(1, shift = 8) == BitSet(8))
   }
 
-  test ("shortToBitSet test") {
-    assert(BitSetTool.shortToBitSet(-1) == BitSet(Range(0,16):_*))
-    assert(BitSetTool.shortToBitSet(0) == BitSet())
-    assert(BitSetTool.shortToBitSet(1) == BitSet(0))
+  test ("byteToBitSet with filter & shift test") {
+    // filterWidth is 3, so only three elements are converted (or below 3)
+    assert(BitSetTool.byteToBitSet(-1, filterBitwidth=3, shift = 8) == BitSet(8,9,10))
+    assert(BitSetTool.byteToBitSet(0, filterBitwidth=3, shift = 8) == BitSet())
+    assert(BitSetTool.byteToBitSet(1, filterBitwidth=3, shift = 8) == BitSet(8))
+  }
+
+  test ("byteToBitSet bigendian test") {
+    // filterWidth is 3, so only three elements are converted (or below 3)
+    // -128 => 1000 0000, in little endian it is bit 0
+    assert(BitSetTool.byteToBitSet(-128, bigEndian = false, shift = 8) == BitSet(8))
+    assert(BitSetTool.byteToBitSet(-128, bigEndian = false, filterBitwidth = 0) == BitSet())
+    assert(BitSetTool.byteToBitSet(-128, bigEndian = false, filterBitwidth = 1) == BitSet(0)) // no shift
+
+    // -64 => 1100 0000 => only 1 width is used => 0
+    assert(BitSetTool.byteToBitSet(-64, bigEndian = false, filterBitwidth = 1) == BitSet(0))
+
+    // -32 => 1110 0000 => only 1 width is used => 0
+    assert(BitSetTool.byteToBitSet(-32, bigEndian = false, filterBitwidth = 2) == BitSet(0, 1))
   }
 
   test ("bitSetToInt") {

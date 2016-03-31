@@ -29,14 +29,6 @@ class TestByteArrayTool extends FunSuite {
     assert("-1:-1:-1:-1:-2" == ByteArrayTool.adjust(value, goalSize = 5, signExtension=true, bigEndian = true).mkString(":"))
   }
 
-//  test ("adjust test expand/little endian") {
-//    var value = Array[Byte](1, 0, 0, 0, 0) // big endian
-//    assert("1:0" == ByteArrayTool.adjust(value, goalSize = 2, bigEndian = false).mkString(":"))
-//
-//    value = Array[Byte](-2, -1, -1, -1) // big endian
-//    assert("-2:-1" == ByteArrayTool.adjust(value, goalSize = 2, bigEndian = false).mkString(":"))
-//  }
-
   // string
   test ("stringToByteArray") {
     var value = "Hello, world"
@@ -188,6 +180,11 @@ class TestByteArrayTool extends FunSuite {
     assert(y.mkString(":") == "")
     y = ByteArrayTool.bitSetToByteArray(x, 10)
     assert(y.mkString(":") == "0:0:0:0:0:0:0:0:0:0")
+  }
+
+
+  test("byte array to bitset test") {
+    //var value = Array[scala.Byte](1, )
   }
 
   // double
