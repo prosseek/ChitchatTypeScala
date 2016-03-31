@@ -29,6 +29,15 @@ class TestByteArrayTool extends FunSuite {
     assert("-1:-1:-1:-1:-2" == ByteArrayTool.adjust(value, goalSize = 5, signExtension=true, bigEndian = true).mkString(":"))
   }
 
+  // stitch
+  test ("stitch test") {
+
+    val byteArray1 = Array[Byte](1,0,0,-1) // 4 bytes, big-endian, I'll use only 3 bits (ignore 1, and high bits of -1 (0xFF))
+    val byteArray2 = Array[Byte](0,0,7) // 3 bytes, big-endian, only
+    val res = ByteArrayTool.stitch(Seq[Array[Byte]](byteArray1, byteArray2), Seq[Int](3,3))
+    println(res)
+  }
+
   // string
   test ("stringToByteArray") {
     var value = "Hello, world"
@@ -160,19 +169,28 @@ class TestByteArrayTool extends FunSuite {
     // 1111 0000 1010 ...
     // 15        5    ...
     var x = BitSet(0,1,2,3,8,10,104)
-    var y = ByteArrayTool.bitSetToByteArray(x)
-    assert(y.mkString(":") == "15:5:0:0:0:0:0:0:0:0:0:0:0:1")
-    assert(ByteArrayTool.byteArrayToBitSet(y) == x)
+    var y1 = ByteArrayTool.bitSetToByteArray(x, bigEndian = true)
+    assert(y1.mkString(":") == "1:0:0:0:0:0:0:0:0:0:0:0:5:15")
+    var y2 = ByteArrayTool.bitSetToByteArray(x, bigEndian = false)
+    assert(y2.mkString(":") == "15:5:0:0:0:0:0:0:0:0:0:0:0:1")
+
+    assert(ByteArrayTool.byteArrayToBitSet(y1, bigEndian = true) == x)
+    assert(ByteArrayTool.byteArrayToBitSet(y2, bigEndian = false) == x)
 
     x = BitSet(0,1,2,3,4,5,6,7,8)
-    y = ByteArrayTool.bitSetToByteArray(x)
+    var y = ByteArrayTool.bitSetToByteArray(x, bigEndian = false)
     assert(y.mkString(":") == "-1:1")
-    assert(ByteArrayTool.byteArrayToBitSet(y) == x)
+    assert(ByteArrayTool.byteArrayToBitSet(y, bigEndian = false) == x)
 
     x = BitSet(0)
-    y = ByteArrayTool.bitSetToByteArray(x, 4)
+    y = ByteArrayTool.bitSetToByteArray(x, goalSize = 4, bigEndian = false)
     assert(y.mkString(":") == "1:0:0:0") // LOW - HIGH bits
-    assert(ByteArrayTool.byteArrayToBitSet(y) == x)
+    assert(ByteArrayTool.byteArrayToBitSet(y, bigEndian = false) == x)
+
+    x = BitSet(0)
+    y = ByteArrayTool.bitSetToByteArray(x, goalSize = 4, bigEndian = true)
+    assert(y.mkString(":") == "0:0:0:1") // LOW - HIGH bits
+    assert(ByteArrayTool.byteArrayToBitSet(y, bigEndian = true) == x)
 
     // special case when there is no 1 in the value
     x = BitSet()
@@ -182,9 +200,15 @@ class TestByteArrayTool extends FunSuite {
     assert(y.mkString(":") == "0:0:0:0:0:0:0:0:0:0")
   }
 
-
   test("byte array to bitset test") {
-    //var value = Array[scala.Byte](1, )
+    val byteArray = Array[Byte](1,0,0,-1) //
+
+    // For big endian, we read <= (right to left direction)
+    assert(BitSet(0, 1, 2, 3, 4, 5, 6, 7, 24) == ByteArrayTool.byteArrayToBitSet(byteArray = byteArray, bigEndian = true, shift = 0))
+
+    // for little endian, we read => direction
+    // The endianness is byte level, not bit level
+    assert(BitSet(0, 24, 25, 26, 27, 28, 29, 30, 31) == ByteArrayTool.byteArrayToBitSet(byteArray = byteArray, bigEndian = false, shift = 0))
   }
 
   // double

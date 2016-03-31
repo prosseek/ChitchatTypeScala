@@ -33,23 +33,6 @@ class TestBitSetTool extends FunSuite {
     assert(BitSetTool.byteToBitSet(1, filterBitwidth=3, shift = 8) == BitSet(8))
   }
 
-  test ("byteToBitSet bigendian test") {
-    // filterWidth is 3, so only three elements are converted (or below 3)
-    // -128 => 1000 0000, in little endian it is bit 0
-    assert(BitSetTool.byteToBitSet(-128, bigEndian = false, shift = 8) == BitSet(8))
-    assert(BitSetTool.byteToBitSet(-128, bigEndian = false, filterBitwidth = 0) == BitSet())
-    assert(BitSetTool.byteToBitSet(-128, bigEndian = false, filterBitwidth = 1) == BitSet(0)) // no shift
-
-    // -64 => 1100 0000 => only 1 width is used => 0
-    assert(BitSetTool.byteToBitSet(-64, bigEndian = false, filterBitwidth = 1) == BitSet(0))
-
-    // -32 => 1110 0000 => only 1 width is used => 0
-    assert(BitSetTool.byteToBitSet(-32, bigEndian = false, filterBitwidth = 2) == BitSet(0, 1))
-  }
-
-  test ("bitSetToInt") {
-    assert(BitSetTool.bitSetToInt(BitSet(0,1,2)) == 7)
-  }
   test ("bitSetToInt when the result is negative") {
     assert(BitSetTool.bitSetToValue(BitSet(0,1,2), bitWidth=3) == -1)
     assert(BitSetTool.bitSetToValue(BitSet(0,1,2,3,4,7,8), bitWidth=9) == -97)
