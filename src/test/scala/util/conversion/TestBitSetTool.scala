@@ -26,13 +26,6 @@ class TestBitSetTool extends FunSuite {
     assert(BitSetTool.byteToBitSet(1, shift = 8) == BitSet(8))
   }
 
-  test ("byteToBitSet with filter & shift test") {
-    // filterWidth is 3, so only three elements are converted (or below 3)
-    assert(BitSetTool.byteToBitSet(-1, filterBitwidth=3, shift = 8) == BitSet(8,9,10))
-    assert(BitSetTool.byteToBitSet(0, filterBitwidth=3, shift = 8) == BitSet())
-    assert(BitSetTool.byteToBitSet(1, filterBitwidth=3, shift = 8) == BitSet(8))
-  }
-
   test ("bitSetToInt when the result is negative") {
     assert(BitSetTool.bitSetToValue(BitSet(0,1,2), bitWidth=3) == -1)
     assert(BitSetTool.bitSetToValue(BitSet(0,1,2,3,4,7,8), bitWidth=9) == -97)

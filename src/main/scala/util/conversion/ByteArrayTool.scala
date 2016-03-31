@@ -169,21 +169,16 @@ object ByteArrayTool {
     * @param sizes
     */
   def stitch(byteArrays: Seq[Array[scala.Byte]], sizes: Seq[Int], bigEndian:Boolean = true) = {
-    // acc._1 = the sum of bit count so far
-    // acc._2 = (byteArray, size)
-    // byteArrayAndSize._1 = byteArray
-    // byteArrayAndSize._2 = size
-//    val res = ((0, BitSet()) /: byteArrays.zip(sizes)) { (acc, byteArrayAndSize) =>
-//      (acc._1 + byteArrayAndSize._2, // sum of sizes so far
-//       acc._2 ++ byteArrayToBitSet(byteArray=byteArrayAndSize._1, bigEndian=bigEndian, shift=acc._1))
-//    }
 
     var res = BitSet()
     var totalSize = 0
     byteArrays.zip(sizes) foreach {
       case (byteArray, size) => {
-        val r = byteArrayToBitSet(byteArray = byteArray, bigEndian = bigEndian, shift = totalSize)
-        res ++= r
+        val r = byteArrayToBitSet(byteArray = byteArray, bigEndian = bigEndian)
+        // add the bits only smaller than size
+        // ex) size == 3, r == (0,1,2,3,4), we only use (0,1,2)
+        val modifiedValue = r.filter( _ < size).map(_ + totalSize)
+        res ++= modifiedValue
         totalSize += size
       }
     }
@@ -428,20 +423,12 @@ object ByteArrayTool {
     * @param shift
     * @return generated BitSet
     */
-  // TODO: Check if this function is necessary
   def byteArrayToBitSet(byteArray:Array[Byte], bigEndian:Boolean = true, shift:Int = 0) = {
 
     val arrangedByteArray = if (bigEndian) byteArray.reverse else byteArray
 
     var res = ArrayBuffer[Int]()
     for ((v,i) <- arrangedByteArray.zipWithIndex if v != 0) {
-      // IMPORTANT!
-      // bigEndian should be set to false even the byteArray is ordered in littleEndian.
-      // Without this setup, the input value should be wrong.
-      // {{{
-      //     "15:0:0:1" (little endian)
-      //      if 15(00000111 in big endian) is processed in little endian, the value is interpreted as (11100000)
-      // }}}
       res.appendAll(BitSetTool.byteToBitSet(value = v, shift = shift).toArray.map(_ + 8*i))
     }
     scala.collection.immutable.BitSet(res: _*)

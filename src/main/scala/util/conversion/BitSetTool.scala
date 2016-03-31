@@ -10,17 +10,14 @@ object BitSetTool {
     * We only need byteToBitSet as multi-byte conversion can be implemented with
     * byteArray -> BitSet
     *
-    * ==== Why filterBitwidth ====
-    *  [[util.conversion.ByteArrayTool.stitch]] requires not selecting higher bits.
-    *
     * @param value
     * @param shift
     * @return
     */
-  def byteToBitSet(value:Byte, filterBitwidth:Int = 8, shift:Int = 0) = {
+  def byteToBitSet(value:Byte, shift:Int = 0) = {
     // http://stackoverflow.com/questions/21568800/type-mismatch-for-generic-integral-in-scala
     val op = (x:Byte, s:Int) => ((x >> s) & 1) == 1
-    BitSet((for (i <- 0 to (filterBitwidth - 1) if op(value, i) == true) yield (i + shift)): _*)
+    BitSet((for (i <- 0 to (8 - 1) if op(value, i) == true) yield (i + shift)): _*)
   }
 
   /** Returns a value that bitSet represents

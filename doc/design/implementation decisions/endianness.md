@@ -24,3 +24,9 @@ The reverse can be implmented with a String object instantiation.
 
     scala> new String(res10, "ASCII")
     res13: String = 12345
+
+### Level of endianness
+
+We don't use endian at the bit level, we use endianness only at byte level.
+
+    12:34 -> the value 12 and 34 is big endian.

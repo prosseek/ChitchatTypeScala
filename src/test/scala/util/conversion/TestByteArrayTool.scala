@@ -31,11 +31,13 @@ class TestByteArrayTool extends FunSuite {
 
   // stitch
   test ("stitch test") {
+    var byteArray1 = Array[Byte](1,0,0,-1) // 4 bytes, big-endian, I'll use only 3 bits (ignore 1, and high bits of -1 (0xFF))
+    var byteArray2 = Array[Byte](0,0,7) // 3 bytes, big-endian, only
+    assert(BitSet(0, 1, 2, 3, 4, 5) == ByteArrayTool.stitch(Seq[Array[Byte]](byteArray1, byteArray2), Seq[Int](3,3)))
 
-    val byteArray1 = Array[Byte](1,0,0,-1) // 4 bytes, big-endian, I'll use only 3 bits (ignore 1, and high bits of -1 (0xFF))
-    val byteArray2 = Array[Byte](0,0,7) // 3 bytes, big-endian, only
-    val res = ByteArrayTool.stitch(Seq[Array[Byte]](byteArray1, byteArray2), Seq[Int](3,3))
-    println(res)
+    byteArray1 = Array[Byte](1,0,0,-1) // 4 bytes, big-endian, I'll use only 3 bits (ignore 1, and high bits of -1 (0xFF))
+    byteArray2 = Array[Byte](0,0,3) // 3 bytes, big-endian, only
+    assert(BitSet(0, 1, 2, 3, 4, 5, 6) == ByteArrayTool.stitch(Seq[Array[Byte]](byteArray1, byteArray2), Seq[Int](5,3)))
   }
 
   // string
