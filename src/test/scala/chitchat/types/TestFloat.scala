@@ -13,7 +13,11 @@ class TestFloat extends FunSuite {
     assert((f.decode(f.encode(1.234f)).get - 0.234f) < 0.0001)
 
     // checkRange
-    val error = Array[Byte](21, 33, 54, 65, 66)
+    var error = Array[Byte](21, 33, 54, 65, 66)
+    assert(f.decode(error).isEmpty)
+
+    // error
+    error = Array[Byte](-1, -1, -1, -1)
     assert(f.decode(error).isEmpty)
   }
 }

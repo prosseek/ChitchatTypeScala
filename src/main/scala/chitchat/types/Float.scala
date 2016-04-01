@@ -16,9 +16,18 @@ class Float extends Base[JFloat](name = "float") with Checker {
 
     if (!checkRange(sizeInBytes, byteArray)) return None
 
-    val decodedValue = ByteArrayTool.byteArrayToFloat(byteArray)
-    if (decodedValue > 0) Some((decodedValue - adjustValue).toFloat)
-                     else Some((decodedValue + adjustValue).toFloat)
+    try {
+      val decodedValue: java.lang.Float = ByteArrayTool.byteArrayToFloat(byteArray)
+
+      if (decodedValue.isNaN || decodedValue.isInfinite)
+        return None
+
+      if (decodedValue > 0) Some((decodedValue - adjustValue).toFloat)
+      else Some((decodedValue + adjustValue).toFloat)
+    }
+    catch  {
+      case e:Exception => None
+    }
   }
   override def check(value: JFloat): scala.Boolean = true
 }
