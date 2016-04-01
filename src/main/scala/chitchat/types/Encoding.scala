@@ -12,11 +12,12 @@ import scala.collection.mutable.ArrayBuffer
   * @param name
   * @param elements
   */
-class Encoding(override val name:java.lang.String, val elements:Seq[Range]) extends Base[Seq[scala.Int]](name = name) {
+class Encoding(override val name:java.lang.String, val elements:Seq[Range]) extends Base[Seq[scala.Int]](name = name) with Checker {
   def size = (0 /: elements)((acc, element) => acc + element.size)
   def sizes = elements.map(_.size)
   def ranges = elements.map(i => (i.min, i.max))
   def signs = elements.map(i => i.signed)
+  val sizeInBytes = util.conversion.Util.getBytesForBits(size)
 
   /** Returns byte array from input values in Seq[T] type.
     *
@@ -40,7 +41,8 @@ class Encoding(override val name:java.lang.String, val elements:Seq[Range]) exte
     */
   override def encode(value: Seq[scala.Int]): Array[scala.Byte] = {
     // check size
-    if (value.size != elements.size) throw new RuntimeException(s"Value count ${value.size} is different from element count ${elements.size}")
+    if (value.size != elements.size)
+      throw new RuntimeException(s"Value count ${value.size} is different from element count ${elements.size}")
 
     if (check(value) == false)
       throw new RuntimeException(s"value ${value.mkString(s":")} is not in range ${ranges.mkString(":")}")
@@ -55,10 +57,11 @@ class Encoding(override val name:java.lang.String, val elements:Seq[Range]) exte
 
   override def decode(byteArray: Array[scala.Byte]): Option[Seq[scala.Int]] = {
 
+    if (!checkRange(sizeInBytes, byteArray)) return None
+
     val bitset = util.conversion.ByteArrayTool.byteArrayToBitSet(byteArray = byteArray)
 
     var sumOfSize = 0
-
     val elementsInBitset = ArrayBuffer[BitSet]()
     elements.foreach {element =>
       elementsInBitset += bitset.filter(i => i >= sumOfSize && i < (sumOfSize + element.size)).map(_ - sumOfSize)
@@ -76,7 +79,7 @@ class Encoding(override val name:java.lang.String, val elements:Seq[Range]) exte
   }
 
   override def check(value: Seq[scala.Int]): scala.Boolean = {
-    elements.zip(value) map {
+    elements.zip(value) foreach {
       case (element, v) => {
         if (!(element.check(v)))
           return false

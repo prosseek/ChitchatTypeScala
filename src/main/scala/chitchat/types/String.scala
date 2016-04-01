@@ -5,7 +5,7 @@ import chitchat.types._
 import java.lang.{String => JString}
 import util.conversion._
 
-class String extends Base[JString](name = "string") {
+class String extends Base[JString](name = "string") with Checker {
 
   private def charInRange(char:scala.Byte): scala.Boolean = {
     val uchar = 0xFF & char
@@ -17,10 +17,13 @@ class String extends Base[JString](name = "string") {
   }
 
   override def decode(byteArray: Array[scala.Byte]): Option[JString] = {
-    val size = byteArray(0)
+    val sizeInBytes = byteArray(0) + 1
+    val size = sizeInBytes * 8
 
     // (size + 1) is the total string length, so byteArray should be same or larger than this
-    if (byteArray.size < (size + 1)) return None
+    if (byteArray.size < sizeInBytes) return None
+
+    if (!checkRange(sizeInBytes, byteArray)) return None
 
     // each of the chars in byteArray should be in range
     byteArray.slice(1, byteArray.size).foreach { bytearray =>

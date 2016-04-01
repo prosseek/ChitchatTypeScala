@@ -1,3 +1,8 @@
+### [2016/03/31]07:12PM
+
+size is measured in bits.
+sizeInBytes is measured in bytes.
+
 ### [2016/03/31]04:22PM
 
 For Range based type, the maximum length is 4 bytes (unsigned).

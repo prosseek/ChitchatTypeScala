@@ -21,9 +21,11 @@ class TestEncoding extends FunSuite {
   test ("decoding test") {
     val e = new Encoding(name = "Hello", Array[Range](new Range(name="a", size=5, signed = false, min = 0, max = 10),
                                                     new Range(name="b", size=5, signed = true, min = -10, max = 10)))
-
-    val byteArray = Array[Byte](2, -59)
+    var byteArray = Array[Byte](2, -59)
     assert(e.decode(byteArray).get.toList == List(5, -10))
-  }
 
+    // decode error
+    byteArray = Array[Byte](2, -59, 3)
+    assert(e.decode(byteArray).isEmpty)
+  }
 }
