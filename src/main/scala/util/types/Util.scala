@@ -10,7 +10,7 @@ import scala.collection.mutable.{Map => MMap}
 
 object Util {
 
-  def getSystemTypeInstances() = {
+  def getSystemTypeInstances = {
     Map[JString, chitchat.types.Base[_]](
       // range
       "age" -> new Age,
@@ -34,16 +34,23 @@ object Util {
   }
 
   def getUserTypeInstances(directory: JString, namespace: JString = "chitchat.types") = {
-    // val directory = "./src/test/resources/util/file/"
-    val instances = getClassInstances[chitchat.types.Base[_]](directory, namespace)
+
     val mmap = MMap[JString, chitchat.types.Base[_]]()
-    instances.foreach {instance =>
-      mmap(instance.name) = instance
+
+    if (directory == "") {
+      mmap
+    } else {
+      // val directory = "./src/test/resources/util/file/"
+      val instances = getClassInstances[chitchat.types.Base[_]](directory, namespace)
+
+      instances.foreach { instance =>
+        mmap(instance.name) = instance
+      }
+      mmap
     }
-    mmap
   }
 
   def getTypeInstances(directory:JString) : Map[JString, chitchat.types.Base[_]] = {
-    getSystemTypeInstances() ++ getUserTypeInstances(directory)
+    getSystemTypeInstances ++ getUserTypeInstances(directory)
   }
 }

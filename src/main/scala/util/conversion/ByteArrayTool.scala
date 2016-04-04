@@ -10,6 +10,7 @@ import scala.collection.mutable.{Map => MMap}
   * It also provides adjust function to fit the type value in the given bytearray with N elements.
   *
   *  - Utility
+  *    - zeroPatch
   *    - adjust
   *    - stitch
   *
@@ -32,6 +33,20 @@ import scala.collection.mutable.{Map => MMap}
   */
 
 object ByteArrayTool {
+
+  /**
+    *
+    * @param byteArray
+    * @param goalSize
+    */
+  def zeroPatch(byteArray:Array[Byte], goalSize:Int): Array[Byte] = {
+    val originalSize = byteArray.size
+    if (goalSize == originalSize) return byteArray
+    if (goalSize < originalSize) throw new RuntimeException(s"Goal size ${goalSize} is smaller than byte array size ${byteArray.size}")
+
+    val zeros = Array.fill[Byte](goalSize - originalSize)(0)
+    byteArray ++ zeros
+  }
 
   /****************************************************************************
     * Adjust

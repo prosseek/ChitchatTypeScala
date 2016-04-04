@@ -9,12 +9,12 @@ class TestUtil extends FunSuite {
     val expectEncode = Set[String]("date", "time", "latitude", "longitude")
     val expectEtc = Set[String]("string", "float")
 
-    val result = getSystemTypeInstances().keys.toSet
+    val result = getSystemTypeInstances.keys.toSet
     assert(expectRange ++ expectEncode ++ expectEtc == result)
   }
 
   test ("getSystemTypeInstances test") {
-    val types = getSystemTypeInstances()
+    val types = getSystemTypeInstances
     assert(types("string").asInstanceOf[chitchat.types.String].name == "string")
     assert(types("ubyte").asInstanceOf[chitchat.types.range.UByte].size == 8)
   }

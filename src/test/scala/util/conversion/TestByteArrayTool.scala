@@ -4,6 +4,17 @@ import org.scalatest._
 import scala.collection.BitSet
 
 class TestByteArrayTool extends FunSuite {
+  // zeroPatch
+  test("zero patch") {
+    var value = Array[Byte](1,2,3,4)
+    var res = ByteArrayTool.zeroPatch(value, 6)
+    assert(res.mkString(":") == "1:2:3:4:0:0")
+
+    intercept[RuntimeException] {
+      ByteArrayTool.zeroPatch(value, 3)
+    }
+  }
+
   // adjust
   test ("adjust test shrink/big endian") {
     var value = Array[Byte](0, 0, 0, 0, 1) // big endian

@@ -1,4 +1,4 @@
-name := "ChitchatTypeScala"
+name := "chitchatType"
 
 version := "0.1"
 scalaVersion := "2.11.7"

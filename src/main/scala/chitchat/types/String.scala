@@ -23,10 +23,11 @@ class String extends Base[JString](name = "string") with Checker {
     // (size + 1) is the total string length, so byteArray should be same or larger than this
     if (byteArray.size < sizeInBytes) return None
 
+    // excessive bytes should be zero
     if (!checkRange(sizeInBytes, byteArray)) return None
 
     // each of the chars in byteArray should be in range
-    byteArray.slice(1, byteArray.size).foreach { bytearray =>
+    byteArray.slice(1, sizeInBytes).foreach { bytearray =>
       if (!charInRange(bytearray)) return None
     }
     Some(ByteArrayTool.byteArrayToString(byteArray))

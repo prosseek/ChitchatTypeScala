@@ -6,11 +6,10 @@ import chitchat.types.Base
 
 import scala.collection.mutable.ArrayBuffer
 
-class TypeInference(val typesDirectory : JString = "") {
+class TypeInference(val types : Map[java.lang.String, chitchat.types.Base[_]]) {
 
   def rangeTypes = Array[java.lang.String]("age", "level", "boolean", "byte", "ubyte")
   def encodingTypes = Array[java.lang.String]("date", "time", "latitude", "longitude")
-  val types: Map[java.lang.String, chitchat.types.Base[_]] = Util.getTypeInstances(typesDirectory)
 
   def getType(label:JString, value:Array[Byte] = null) : Option[Base[_]] = {
     // If we know the type from the name, we return it
@@ -19,7 +18,7 @@ class TypeInference(val typesDirectory : JString = "") {
 
     // If we can guess the value type, we return it
     if (value != null) {
-      val result = getTypeFromValue(value)
+      val result = getTypeFromByteArrayValue(value)
       if (result.size > 0)
         return Some(types(result(0)))
     }
@@ -27,7 +26,11 @@ class TypeInference(val typesDirectory : JString = "") {
     None
   }
 
-  def getTypeFromValue(value:Array[Byte]) : Seq[java.lang.String] = {
+  def getTypeFromAnyValue(value:Any) : Seq[java.lang.String] = {
+    null
+  }
+
+  def getTypeFromByteArrayValue(value:Array[Byte]) : Seq[java.lang.String] = {
     // check if the value can be interpreted as string
     val result = ArrayBuffer[java.lang.String]()
 
