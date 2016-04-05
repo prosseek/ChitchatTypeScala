@@ -59,7 +59,12 @@ class Encoding(override val name:java.lang.String, val elements:Seq[Range]) exte
 
     if (!checkRange(sizeInBytes, byteArray)) return None
 
-    val bitset = util.conversion.ByteArrayTool.byteArrayToBitSet(byteArray = byteArray)
+    // byteArrayToBitSet assumes big endian, so added bytes make the wrong bit position
+    // ex) XX0000 => byteArrayToBitSeet assumes XX starts in bit 32
+    // so we need to remove the added bytes XX0000 => XX
+    val slicedByteArray = byteArray.slice(0, sizeInBytes)
+
+    val bitset = util.conversion.ByteArrayTool.byteArrayToBitSet(byteArray = slicedByteArray)
 
     var sumOfSize = 0
     val elementsInBitset = ArrayBuffer[BitSet]()
