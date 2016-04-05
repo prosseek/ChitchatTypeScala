@@ -3,6 +3,8 @@ package chitchat.types
 import java.io.File
 import org.scalatest.FunSuite
 
+class F extends String (name = "string_f")
+
 class TestString extends FunSuite
 {
   test ("simple") {
@@ -23,5 +25,10 @@ class TestString extends FunSuite
     val pstring = new String
     val str = Array[Byte](5, 71, 0, 0, 1, 1, 0)
     assert(pstring.decode(str).isEmpty)
+  }
+
+  test ("string extension test") {
+    val f = new F
+    f.name == "string_f"
   }
 }

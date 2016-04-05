@@ -1,9 +1,9 @@
 package chitchat.types
 
-import java.lang.{Float => JFloat}
+import java.lang.{Float => JFloat, String => JString}
 import util.conversion.ByteArrayTool
 
-class Float extends Base[JFloat](name = "float") with Checker {
+class Float(override val name: JString = "float") extends Base[JFloat](name) with Checker {
   def size = 4 * 8
   def adjustValue = 1.0
   def sizeInBytes = 4

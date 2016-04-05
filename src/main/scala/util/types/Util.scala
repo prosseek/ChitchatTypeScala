@@ -12,6 +12,7 @@ object Util {
 
   def getSystemTypeInstances = {
     Map[JString, chitchat.types.Base[_]](
+
       // range
       "age" -> new Age,
       "level" -> new Level,

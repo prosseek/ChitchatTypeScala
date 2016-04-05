@@ -26,7 +26,8 @@ class TestUtil extends FunSuite {
     val directory = "./src/test/resources/util/file/"
     val files = getFileNames(directory, namespace)
 
-    assert("chitchat.types.A:chitchat.types.B:chitchat.types.C" == files.mkString(":"))
+
+    assert("chitchat.types.A:chitchat.types.B:chitchat.types.C:chitchat.types.D:chitchat.types.E:chitchat.types.F" == files.sorted.mkString(":"))
   }
 
   /**
@@ -45,9 +46,10 @@ class TestUtil extends FunSuite {
 
     instantiations.foreach { instance =>
       instance.name match {
-        case "range_A" => assert(instance.asInstanceOf[Range].size == 100)
-        case "range_B" => assert(instance.asInstanceOf[Range].size == 200)
-        case "range_C" => assert(instance.asInstanceOf[Range].size == 300)
+        case "range_a" => assert(instance.asInstanceOf[Range].size == 5)
+        case "range_b" => assert(instance.asInstanceOf[Range].size == 10)
+        case "range_c" => assert(instance.asInstanceOf[Range].size == 15)
+        case _ => true
       }
     }
   }

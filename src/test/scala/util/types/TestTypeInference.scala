@@ -11,25 +11,21 @@ class TestTypeInference extends FunSuite with BeforeAndAfterEach with BeforeAndA
     typeInference  = new TypeInference(types)
   }
 
-  test ("getType") {
+  test ("getChitchatTypeFromLabel test") {
     val label = "time"
-    assert("time" == typeInference.getType(label).get.name)
+    //println(typeInference.getType(label).get.name)
+    assert("time" == typeInference.getChitchatTypeFromLabel(label).get._2.name)
+    assert("encoding" == typeInference.getChitchatTypeFromLabel(label).get._1)
   }
 
-  test ("getTime type and setup") {
-    val encodingTypes = Set("time")
-
+  test ("encodeFromLabel test") {
     val label = "time"
-    if (encodingTypes.contains(label)) {
-      val t = typeInference.getType(label).get
-      val res = t.asInstanceOf[chitchat.types.Encoding].encode(Seq[Int](12,14))
-      println(res.mkString(":"))
-      println(t.asInstanceOf[chitchat.types.Encoding].decode(res))
-    }
+    val result = typeInference.encodeFromLabel(label, Seq[Int](11, 12)).get
+    assert(result.mkString(":") == "1:-117")
   }
 
-  test ("getTypeFromValue") {
+  test ("getTypeFromValue test") {
     val value = Array[Byte](5, 72, 101, 108, 108, 111)
-    assert("string" == typeInference.getTypeFromByteArrayValue(value).mkString(":"))
+//    assert("string" == typeInference.getTypeFromByteArrayValue(value).mkString(":"))
   }
 }
