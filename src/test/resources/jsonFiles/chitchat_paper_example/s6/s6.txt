@@ -1,0 +1,8 @@
+hop count -> 1
+date -> (2014, 1, 23)
+time -> (16, 10)
+notification -> 10 minutes delay
+message -> arrive bus stop 2325 at 04:20pm
+latitude -> (30, 25, 38, 2)
+longitude -> (-17, 47, 11, 0)
+sender -> south bound bus 11

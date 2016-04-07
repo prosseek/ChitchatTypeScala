@@ -1,0 +1,8 @@
+hop count -> 20
+date -> (2014, 6, 23)
+time -> (10, 00)
+message -> I'll be waiting at my location.
+latitude -> (30, 25, 48, 2)
+longitude -> (-13, 41, 11, 30)
+group -> marathon lovers group
+sender -> Tim

@@ -1,0 +1,6 @@
+hop count -> 2
+date -> (2014, 6, 13)
+time -> (11, 11)
+level of recommendation -> 2
+recommendation -> Chef's special
+comment -> Too expensive considering the quality

@@ -1,0 +1,9 @@
+hop count -> 4
+date -> (2014, 6, 23)
+time -> (12, 11)
+urgent -> 1
+message -> gas leak experts needed at building 5
+latitude -> (30, 25, 38, 2)
+longitude -> (-17, 47, 11, 0)
+group -> fire fighter group 14
+temperature -> 45

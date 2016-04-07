@@ -1,0 +1,17 @@
+{
+  "latitude": [30, 25, 38, 5],
+  "longitude": [-17, 47, 11, 0],
+  "time": [11, 21],
+  "date":[2015, 10, 11],
+  "device id": 11, 
+  "sensor number": 3,
+  "sensor 1 name": "temp",
+  "sensor 1 value": 28,
+  "sensor 1 unit": "C",
+  "sensor 2 name": "humidity",
+  "sensor 2 value": 43,
+  "sensor 2 unit": "%",
+  "sensor 3 name": "light",
+  "sensor 3 value": 121,
+  "sensor 3 unit": "lux",
+}

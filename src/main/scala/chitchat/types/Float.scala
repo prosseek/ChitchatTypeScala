@@ -3,14 +3,17 @@ package chitchat.types
 import java.lang.{Float => JFloat, String => JString}
 import util.conversion.ByteArrayTool
 
-class Float(override val name: JString = "float") extends Base[JFloat](name) with Checker {
+class Float(override val name: JString = "float", val elements:Seq[JFloat] = null) extends Base[JFloat](name) with Checker {
   def size = 4 * 8
-  def adjustValue = 1.0
+  def adjustValue = 1.0f
   def sizeInBytes = 4
 
+  def adJustedValue(value:JFloat) = if (value > 0) value + adjustValue else value - adjustValue
+  def revertedValue(value:JFloat) = if (value > 0) value - adjustValue else value + adjustValue
+
   override def encode(value: JFloat): Array[scala.Byte] = {
-    var adjustedValue = if (value > 0) value + adjustValue else value - adjustValue
-    ByteArrayTool.floatToByteArray(value)
+    var adjustedValue = adJustedValue(value)
+    ByteArrayTool.floatToByteArray(adjustedValue)
   }
   override def decode(byteArray: Array[scala.Byte]): Option[JFloat] = {
 
@@ -22,12 +25,23 @@ class Float(override val name: JString = "float") extends Base[JFloat](name) wit
       if (decodedValue.isNaN || decodedValue.isInfinite)
         return None
 
-      if (decodedValue > 0) Some((decodedValue - adjustValue).toFloat)
-      else Some((decodedValue + adjustValue).toFloat)
+      val rv = revertedValue(decodedValue)
+      if (check(rv))
+        Some(rv)
+      else
+        None
     }
     catch  {
       case e:Exception => None
     }
   }
-  override def check(value: JFloat): scala.Boolean = true
+  override def check(value: JFloat): scala.Boolean = {
+    if (elements == null) true
+    else {
+      val min = elements(0)
+      val max = elements(1)
+
+      (value >= min && value <= max)
+    }
+  }
 }

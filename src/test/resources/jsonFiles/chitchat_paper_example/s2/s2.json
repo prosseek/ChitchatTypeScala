@@ -1,0 +1,13 @@
+{
+  "ride2 rating" : 4,
+  "park visit time" : [9, 16],
+  "date" : [2014, 8, 30],
+  "kids count" : 2,
+  "age of kid1" : 2,
+  "age of kid2" : 5,
+  "level of thrill" : 3,
+  "rides completed count" : 2,
+  "ride1" : "merry-go-round",
+  "ride2" : "duck boats",
+  "ride1 rating" : 9,
+}

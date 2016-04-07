@@ -9,4 +9,6 @@ libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.6" % "test"
 
 libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion.value
 
+libraryDependencies += "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.2"
+
 (fullClasspath in Test) += Attributed.blank(file("./src/test/resources/util/file/"))

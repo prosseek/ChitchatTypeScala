@@ -1,0 +1,10 @@
+{
+"sport": "football",
+"position": "goalkeeper",
+"skill level": 5,
+"gchat ids": "john1988",
+"latitude": [30, 25, 38, 2],
+"longitude": [-17, 47, 11, 0],
+"available time": [12, 15],
+"date": [2014, 6, 23]
+}
