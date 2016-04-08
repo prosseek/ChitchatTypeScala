@@ -19,6 +19,6 @@ class TestLevel extends FunSuite {
     assert(!level.check(-129))
     assert(!level.check(257))
 
-    assert(level.decode(level.encode(5)).get == 5)
+    assert(level.decode(level.encode(5).get).get == 5)
   }
 }

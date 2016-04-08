@@ -15,7 +15,7 @@ class TestEncoding extends FunSuite {
     // 5 => 00101 (5bit)
     // -10 => 10110 (5 bit signed)
     // 10110:00101 (big endian)
-    assert("2:-59" == e.encode(Seq[Int](5, -10)).mkString(":"))
+    assert("2:-59" == e.encode(Seq[Int](5, -10)).get.mkString(":"))
   }
 
   test ("decoding test") {

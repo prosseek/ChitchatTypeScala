@@ -39,7 +39,7 @@ class Encoding(override val name:java.lang.String, val elements:Seq[Range]) exte
     * @param value Seq[scala.Int] type of data that contains N elements
     * @return array byte to encode the value
     */
-  override def encode(value: Seq[scala.Int]): Array[scala.Byte] = {
+  override def encode(value: Seq[scala.Int]): Option[Array[scala.Byte]] = {
     // check size
     if (value.size != elements.size)
       throw new RuntimeException(s"Value count ${value.size} is different from element count ${elements.size}")
@@ -48,11 +48,11 @@ class Encoding(override val name:java.lang.String, val elements:Seq[Range]) exte
       throw new RuntimeException(s"value ${value.mkString(s":")} is not in range ${ranges.mkString(":")}")
     val encodedSeq = elements.zip(value) map {
       case (element, v) => {
-        element.encode(v)
+        element.encode(v).get
       }
     }
 
-    util.conversion.ByteArrayTool.stitch(encodedSeq, sizes)
+    Some(util.conversion.ByteArrayTool.stitch(encodedSeq, sizes))
   }
 
   override def decode(byteArray: Array[scala.Byte]): Option[Seq[scala.Int]] = {

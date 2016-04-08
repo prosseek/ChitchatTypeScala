@@ -19,7 +19,7 @@ class TestAge extends FunSuite {
     assert(!age.check(-129))
     assert(!age.check(128))
 
-    assert(age.decode(age.encode(15)).get == 15)
-    assert(age.decode(age.encode(51)).get == 51)
+    assert(age.decode(age.encode(15).get).get == 15)
+    assert(age.decode(age.encode(51).get).get == 51)
   }
 }

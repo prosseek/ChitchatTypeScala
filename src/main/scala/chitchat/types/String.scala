@@ -12,8 +12,8 @@ class String(override val name:JString = "string") extends Base[JString](name) w
     (uchar >= 0x20 && uchar <= 0x7E)
   }
 
-  override def encode(value: JString): Array[scala.Byte] = {
-    ByteArrayTool.stringToByteArray(value)
+  override def encode(value: JString): Option[Array[scala.Byte]] = {
+    Some(ByteArrayTool.stringToByteArray(value))
   }
 
   override def decode(byteArray: Array[scala.Byte]): Option[JString] = {

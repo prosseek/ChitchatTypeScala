@@ -44,13 +44,13 @@ class Range(override val name:java.lang.String = "",
     * @param value
     * @return
     */
-  override def encode(value: Int): Array[scala.Byte] = {
+  override def encode(value: Int): Option[Array[scala.Byte]] = {
     if (check(value) == false) {
       throw new RuntimeException(s"Bit.encode value error (check($value)) returns false: min($min)/max($max)")
     }
     val totalBytes = util.conversion.Util.getBytesForBits(size)
     val byteArray = intToByteArray(value) // make 4 bytes data
-    util.conversion.ByteArrayTool.adjust(byteArray, goalSize = totalBytes)
+    Some(util.conversion.ByteArrayTool.adjust(byteArray, goalSize = totalBytes))
   }
 
   /** Returns the decoded byte array into Int type value

@@ -58,10 +58,10 @@ class TypeDatabase {
       None
     else {
       instance.get match {
-        case v:Encoding => Some(v.encode(v.asInstanceOf[Seq[Int]]))
-        case v:Range => Some(v.encode(v.asInstanceOf[Int]))
-        case v:Float => Some(v.encode(v.asInstanceOf[JFloat]))
-        case v:String => Some(v.encode(v.asInstanceOf[JString]))
+        case v:Encoding => v.encode(v.asInstanceOf[Seq[Int]])
+        case v:Range => v.encode(v.asInstanceOf[Int])
+        case v:Float => v.encode(v.asInstanceOf[JFloat])
+        case v:String => v.encode(v.asInstanceOf[JString])
         case _ => None
       }
     }

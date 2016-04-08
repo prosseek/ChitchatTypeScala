@@ -13,9 +13,9 @@ class Float(override val name: JString = "float", val elements:Seq[JFloat] = nul
   def adJustedValue(value:JFloat) = if (value > 0) value + adjustValue else value - adjustValue
   def revertedValue(value:JFloat) = if (value > 0) value - adjustValue else value + adjustValue
 
-  override def encode(value: JFloat): Array[scala.Byte] = {
+  override def encode(value: JFloat): Option[Array[scala.Byte]] = {
     var adjustedValue = adJustedValue(value)
-    ByteArrayTool.floatToByteArray(adjustedValue)
+    Some(ByteArrayTool.floatToByteArray(adjustedValue))
   }
   override def decode(byteArray: Array[scala.Byte]): Option[JFloat] = {
 

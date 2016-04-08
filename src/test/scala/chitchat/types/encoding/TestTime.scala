@@ -12,7 +12,7 @@ class TestTime extends FunSuite {
     assert(time.ranges.mkString(":") == "(0,24):(0,59)")
     assert(time.signs.mkString(":") == "false:false")
 
-    var en = time.encode(List[Int](11, 59))
+    var en = time.encode(List[Int](11, 59)).get
     // PPPPP111011:01011
     // ******** => (7, hour)
     //         *** ***** => (107, minute)
@@ -20,10 +20,10 @@ class TestTime extends FunSuite {
     assert(time.decode(en).get == List(11, 59))
 
     intercept[java.lang.RuntimeException] {
-      en = time.encode(List[Int](-1, 12))
+      en = time.encode(List[Int](-1, 12)).get
     }
     intercept[java.lang.RuntimeException] {
-      en = time.encode(List[Int](10, 60))
+      en = time.encode(List[Int](10, 60)).get
     }
   }
 }

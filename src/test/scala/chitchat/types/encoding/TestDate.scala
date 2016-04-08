@@ -15,7 +15,7 @@ class TestDate extends FunSuite {
     assert(date.ranges.mkString(":") == "(-64,63):(1,12):(1,31)")
     assert(date.signs.mkString(":") == "true:false:false")
 
-    var en = date.encode(List[Int](10, 3, 12))
+    var en = date.encode(List[Int](10, 3, 12)).get
     // 01100001:10001010 (97:-118, big endian, read from right to left)
     //           ******* (year = 10)
     //      *** * (month = 3)
@@ -24,13 +24,13 @@ class TestDate extends FunSuite {
     assert(date.decode(en).get == List(10,3,12))
 
     intercept[java.lang.RuntimeException] {
-      en = date.encode(List[Int](130, 10, 12))
+      en = date.encode(List[Int](130, 10, 12)).get
     }
     intercept[java.lang.RuntimeException] {
-      en = date.encode(List[Int](10, 10, 43))
+      en = date.encode(List[Int](10, 10, 43)).get
     }
     intercept[java.lang.RuntimeException] {
-      en = date.encode(List[Int](10, 10, -1))
+      en = date.encode(List[Int](10, 10, -1)).get
     }
   }
 }

@@ -17,8 +17,8 @@ class TestFloat extends FunSuite {
     assert(f.size == 4 * 8)
     assert(f.sizeInBytes == 4)
 
-    assert("64:14:-7:-37" == f.encode(1.234f).mkString(":"))
-    assert(inRange(f.decode(f.encode(1.234f)).get, 1.234f, 0.0001f))
+    assert("64:14:-7:-37" == f.encode(1.234f).get.mkString(":"))
+    assert(inRange(f.decode(f.encode(1.234f).get).get, 1.234f, 0.0001f))
 
     // checkRange
     var error = Array[Byte](21, 33, 54, 65, 66)
@@ -34,7 +34,7 @@ class TestFloat extends FunSuite {
     assert(false == rf.check(2.5f))
     assert(true == rf.check(1.0f))
 
-    assert(inRange(rf.decode(rf.encode(1.6f)).get,1.6f, 0.0001f))
+    assert(inRange(rf.decode(rf.encode(1.6f).get).get,1.6f, 0.0001f))
   }
 
 }
