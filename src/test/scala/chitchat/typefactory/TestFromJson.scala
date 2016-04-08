@@ -1,11 +1,9 @@
-package chitchat.types
+package chitchat.typefactory
 
 import org.scalatest.FunSuite
 
-import util.json.Json
 
-
-class TestJsonGeneratedTypes extends FunSuite {
+class TestFromJson extends FunSuite {
 
   val json1 =
     """
@@ -27,8 +25,8 @@ class TestJsonGeneratedTypes extends FunSuite {
     """.stripMargin
 
   test ("simple") {
-    val m = Json.parse(json1)
-    val d1 = JsonGeneration.getEncoding(m)
+    val m = util.json.Json.parse(json1)
+    val d1 = FromJson.getEncoding(m)
     println(d1.check(Seq(0, 0)))
     println(d1.check(Seq(0, 120)))
     println(d1.encode(Seq(3, -2)).mkString(":"))

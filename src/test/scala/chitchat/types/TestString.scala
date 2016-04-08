@@ -3,7 +3,7 @@ package chitchat.types
 import java.io.File
 import org.scalatest.FunSuite
 
-class F extends String (name = "string_f")
+class FTest extends String (name = "f")
 
 class TestString extends FunSuite
 {
@@ -28,7 +28,7 @@ class TestString extends FunSuite
   }
 
   test ("string extension test") {
-    val f = new F
+    val f = new FTest
     f.name == "string_f"
   }
 }

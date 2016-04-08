@@ -58,7 +58,7 @@ class TestJson extends FunSuite {
   test("complex test") {
     {
       val gmapPath = "./src/test/resources/jsonFiles/complex_example/google_map.json"
-      intercept[util.json.JsonException] {
+      intercept[JsonException] {
         val mp = Json.loadJson(gmapPath)
         // "point":new GLatLng(40.266044,-74.718479),
         println(mp.mkString(":"))

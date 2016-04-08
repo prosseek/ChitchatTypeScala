@@ -1,10 +1,13 @@
-package chitchat.types
+package chitchat.typefactory
 
 import java.lang.{String => JString}
-import scala.{Int => SInt}
-import collection.mutable.ListBuffer
 
-object JsonGeneration {
+import chitchat.types.{Encoding, Range}
+
+import scala.collection.mutable.ListBuffer
+import scala.{Int => SInt}
+
+object FromJson {
 
   def getEncoding(m: Map[JString, Any]) = {
     val count = m("count").asInstanceOf[SInt]

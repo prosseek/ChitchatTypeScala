@@ -1,14 +1,15 @@
-package util.types
-
-import chitchat.types.range._
-import chitchat.types.encoding._
-import chitchat.types._
-import util.file.Util._
+package chitchat.typefactory
 
 import java.lang.{String => JString}
+
+import chitchat.types._
+import chitchat.types.encoding._
+import chitchat.types.range._
+import util.file.Util._
+
 import scala.collection.mutable.{Map => MMap}
 
-object Util {
+object FromClass {
 
   def getSystemTypeInstances = {
     Map[JString, chitchat.types.Base[_]](
