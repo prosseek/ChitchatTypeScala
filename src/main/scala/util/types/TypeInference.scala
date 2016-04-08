@@ -5,8 +5,6 @@ import scala.{Int => SInt, Byte => SByte}
 import scala.collection.mutable.{ListBuffer => LBuffer}
 
 import chitchat.types._
-import chitchat.types.range._
-import chitchat.types.encoding._
 
 import scala.collection.mutable.ArrayBuffer
 

@@ -14,8 +14,8 @@ class TestTypeInference extends FunSuite with BeforeAndAfterEach with BeforeAndA
   test ("getChitchatTypeFromLabel test") {
     val label = "time"
     //println(typeInference.getType(label).get.name)
-    assert("time" == typeInference.getChitchatTypeFromLabel(label).get._2.name)
-    assert("encoding" == typeInference.getChitchatTypeFromLabel(label).get._1)
+    assert("time" == typeInference.getChitchatTypeFromLabel(label).get.name)
+    //assert("encoding" == typeInference.getChitchatTypeFromLabel(label).get)
   }
 
   test ("encodeFromLabel test") {
