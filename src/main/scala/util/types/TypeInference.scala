@@ -10,8 +10,15 @@ import chitchat.types.encoding._
 
 import scala.collection.mutable.ArrayBuffer
 
-class TypeInference(val typeInstances : Map[JString, Base[_]]) {
+object TypeInference {
+  def apply(directory:JString = "") = {
+    val typeInstances = Util.getTypeInstances(directory)
+    new TypeInference(typeInstances)
+  }
+}
 
+class TypeInference(val typeInstances : Map[JString, Base[_]]) {
+  // Internal data structure
   val encodingTypes = ArrayBuffer[JString]("date", "time", "latitude", "longitude")
   val rangeTypes = ArrayBuffer[JString]("age", "level", "boolean", "byte", "ubyte")
   val floatingTypes = ArrayBuffer[JString]("float")
@@ -48,7 +55,7 @@ class TypeInference(val typeInstances : Map[JString, Base[_]]) {
       None
   }
 
-  def getChitchatTypeFromLabel(label:JString) : Option[(JString, Base[_])] = {
+  def getChitchatTypeFromLabel(label:JString) : Option[Base[_]] = {
 
     val types = Map(stringTypes   -> "string",
                     floatingTypes -> "float",
@@ -60,7 +67,7 @@ class TypeInference(val typeInstances : Map[JString, Base[_]]) {
     if (typeName == "")
       None
     else {
-      Some(typeName, typeInstances(label))
+      Some(typeInstances(label))
     }
   }
 
@@ -69,30 +76,6 @@ class TypeInference(val typeInstances : Map[JString, Base[_]]) {
     if (value.isInstanceOf[JString]) {
       res += "string"
     }
-
-    res.toSeq
+    res
   }
-
-//  def getTypeFromByteArrayValue(value:Array[Byte]) : Seq[java.lang.String] = {
-//    // check if the value can be interpreted as string
-//    val result = ArrayBuffer[java.lang.String]()
-//
-//    val decodedValue1 = types("string").asInstanceOf[chitchat.types.String].decode(value)
-//    if (decodedValue1.isDefined) result += "string"
-//
-//    val decodedValue2 = types("float").asInstanceOf[chitchat.types.Float].decode(value)
-//    if (decodedValue2.isDefined) result += "float"
-//
-//    rangeTypes.foreach { range =>
-//      val decodedValue = types(range).asInstanceOf[chitchat.types.Range].decode(value)
-//      if (decodedValue.isDefined) result += range
-//    }
-//
-//    encodingTypes.foreach { encoding =>
-//      val decodedValue = types(encoding).asInstanceOf[chitchat.types.Encoding].decode(value)
-//      if (decodedValue.isDefined) result += encoding
-//    }
-//
-//    result.toList
-//  }
 }

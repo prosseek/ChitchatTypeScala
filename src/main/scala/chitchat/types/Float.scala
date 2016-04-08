@@ -3,6 +3,8 @@ package chitchat.types
 import java.lang.{Float => JFloat, String => JString}
 import util.conversion.ByteArrayTool
 
+object Float
+
 class Float(override val name: JString = "float", val elements:Seq[JFloat] = null) extends Base[JFloat](name) with Checker {
   def size = 4 * 8
   def adjustValue = 1.0f
