@@ -9,14 +9,14 @@ class TestTypeInference extends FunSuite with BeforeAndAfterEach with BeforeAndA
   var typeInference : TypeInference = null
   override def beforeAll(): Unit = {
     val directory = "./src/test/resources/util/file/"
-    val types = FromClass.getTypeInstances(directory)
     val typeDatabase = TypeDatabase(Seq[JString](directory))
     typeInference  = new TypeInference(typeDatabase)
   }
 
-  test ("getChitchatTypeFromLabel test") {
+  test ("simple test") {
     val label = "time"
-    //println(typeInference.getType(label).get.name)
+    assert(typeInference.get(label).get.name == label)
+    println(typeInference.encode("time", Seq[Int](1,12)))
     //assert("time" == typeInference.getChitchatTypeFromLabel(label).get.name)
     //assert("encoding" == typeInference.getChitchatTypeFromLabel(label).get)
   }

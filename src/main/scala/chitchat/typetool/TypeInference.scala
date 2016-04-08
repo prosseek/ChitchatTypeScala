@@ -27,6 +27,8 @@ object TypeInference {
   */
 class TypeInference(val typeDatabase : TypeDatabase) {
 
+  def get(label:JString) = typeDatabase.get(label)
+
   def encode(label:JString, value:Any) : Option[Array[SByte]] = {
     /// encode from label
     typeDatabase.encode(label, value)

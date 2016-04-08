@@ -58,10 +58,10 @@ class TypeDatabase {
       None
     else {
       instance.get match {
-        case v:Encoding => v.encode(v.asInstanceOf[Seq[Int]])
-        case v:Range => v.encode(v.asInstanceOf[Int])
-        case v:Float => v.encode(v.asInstanceOf[JFloat])
-        case v:String => v.encode(v.asInstanceOf[JString])
+        case v:Encoding => v.encode(value.asInstanceOf[Seq[Int]])
+        case v:Range => v.encode(value.asInstanceOf[Int])
+        case v:Float => v.encode(value.asInstanceOf[JFloat])
+        case v:String => v.encode(value.asInstanceOf[JString])
         case _ => None
       }
     }
@@ -85,25 +85,11 @@ class TypeDatabase {
       None
     else {
       instance.get match {
-        case v:Float => {
-          val result = util.conversion.ByteArrayTool.byteArrayToFloat(ba)
-          Some(result)
-        }
-        case v:String => {
-          val result = util.conversion.ByteArrayTool.byteArrayToString(ba)
-          Some(result)
-        }
-        case v:Encoding => {
-          val encodingInstance = instance.asInstanceOf[Encoding]
-          encodingInstance.decode(ba)
-        }
-        case v:Range => {
-          val rangeInstance = instance.asInstanceOf[Range]
-          rangeInstance.decode(ba)
-        }
-        case _ => {
-          throw new RuntimeException(s"Unknown type ${instance.get.name}")
-        }
+        case v:Float => Some(util.conversion.ByteArrayTool.byteArrayToFloat(ba))
+        case v:String => Some(util.conversion.ByteArrayTool.byteArrayToString(ba))
+        case v:Encoding => v.decode(ba)
+        case v:Range => v.decode(ba)
+        case _ => throw new RuntimeException(s"Unknown type ${instance.get.name}")
       }
     }
   }
