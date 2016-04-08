@@ -42,4 +42,19 @@ class TestTypeDatabase extends FunSuite {
     assert(tm.mkString(":") == "11")
     assert(typeDatabase.decode("age", tm).get == 11)
   }
+
+  test ("user defined types") {
+    val directory = "./src/test/resources/util/file/"
+    val types = FromClass.getTypeInstances(directory)
+    val typeDatabase = TypeDatabase(Seq[JString](directory))
+
+    val tm = typeDatabase.encode("f", "str").get
+    assert(tm.mkString(":") == "3:115:116:114")
+    assert(typeDatabase.decode("f", tm).get == "str")
+
+    val flt = typeDatabase.get("e").get.asInstanceOf[Float]
+    val fltEncode = flt.encode(1.23f).get
+    assert(fltEncode.mkString(":") == "64:14:-72:82")
+    assert(Math.abs(flt.decode(fltEncode).get - 1.23) < 0.001)
+  }
 }
