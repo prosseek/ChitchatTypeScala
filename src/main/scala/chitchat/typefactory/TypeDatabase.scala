@@ -55,14 +55,14 @@ class TypeDatabase {
   def encode(label:JString, value:Any) : Option[Array[Byte]] = {
     val instance = mmap.get(label)
     if (instance.isEmpty)
-      None
+      throw new RuntimeException(s"No instance for ${label}")
     else {
-      instance.get match {
-        case v:Encoding => v.encode(value.asInstanceOf[Seq[Int]])
-        case v:Range => v.encode(value.asInstanceOf[Int])
-        case v:Float => v.encode(value.asInstanceOf[JFloat])
-        case v:String => v.encode(value.asInstanceOf[JString])
-        case _ => None
+      instance match {
+        case Some(v:Encoding) => v.encode(value.asInstanceOf[Seq[Int]])
+        case Some(v:Range) => v.encode(value.asInstanceOf[Int])
+        case Some(v:Float) => v.encode(value.asInstanceOf[JFloat])
+        case Some(v:String) => v.encode(value.asInstanceOf[JString])
+        case Some(_) | None => None
       }
     }
   }
@@ -84,12 +84,12 @@ class TypeDatabase {
     if (instance.isEmpty)
       None
     else {
-      instance.get match {
-        case v:Float => Some(util.conversion.ByteArrayTool.byteArrayToFloat(ba))
-        case v:String => Some(util.conversion.ByteArrayTool.byteArrayToString(ba))
-        case v:Encoding => v.decode(ba)
-        case v:Range => v.decode(ba)
-        case _ => throw new RuntimeException(s"Unknown type ${instance.get.name}")
+      instance match {
+        case Some(v:Float) => Some(util.conversion.ByteArrayTool.byteArrayToFloat(ba))
+        case Some(v:String) => Some(util.conversion.ByteArrayTool.byteArrayToString(ba))
+        case Some(v:Encoding) => v.decode(ba)
+        case Some(v:Range) => v.decode(ba)
+        case Some(_) | None => throw new RuntimeException(s"Unknown type ${instance.get.name}")
       }
     }
   }
