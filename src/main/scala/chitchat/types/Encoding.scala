@@ -13,11 +13,11 @@ import scala.collection.mutable.ArrayBuffer
   * @param elements
   */
 class Encoding(override val name:java.lang.String, val elements:Seq[Range]) extends Base[Seq[scala.Int]](name = name) with Checker {
-  def size = (0 /: elements)((acc, element) => acc + element.size)
+  override def size = (0 /: elements)((acc, element) => acc + element.size)
   def sizes = elements.map(_.size)
   def ranges = elements.map(i => (i.min, i.max))
   def signs = elements.map(i => i.signed)
-  val sizeInBytes = util.conversion.Util.getBytesForBits(size)
+  override val sizeInBytes = util.conversion.Util.getBytesForBits(size)
 
   /** Returns byte array from input values in Seq[T] type.
     *

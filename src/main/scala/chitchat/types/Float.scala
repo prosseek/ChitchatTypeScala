@@ -6,9 +6,9 @@ import util.conversion.ByteArrayTool
 object Float
 
 class Float(override val name: JString = "float", val elements:Seq[JFloat] = null) extends Base[JFloat](name) with Checker {
-  def size = 4 * 8
+  override def size = 4 * 8
   def adjustValue = 1.0f
-  def sizeInBytes = 4
+  override def sizeInBytes = 4
 
   def adJustedValue(value:JFloat) = if (value > 0) value + adjustValue else value - adjustValue
   def revertedValue(value:JFloat) = if (value > 0) value - adjustValue else value + adjustValue

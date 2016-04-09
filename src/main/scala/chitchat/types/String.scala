@@ -38,4 +38,10 @@ class String(override val name:JString = "string") extends Base[JString](name) w
     }
     true
   }
+
+  // size == 0 means the type is String
+
+  override def size: Int = 0
+
+  override def sizeInBytes: Int = 0
 }

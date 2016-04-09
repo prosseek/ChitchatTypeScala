@@ -9,4 +9,6 @@ abstract class Base[T](val name:java.lang.String = "") {
   def encode(value:T) : Option[Array[scala.Byte]]
   def decode(byteArray: Array[scala.Byte]) : Option[T]
   def check(value:T) : scala.Boolean
+  def size : Int
+  def sizeInBytes: Int
 }

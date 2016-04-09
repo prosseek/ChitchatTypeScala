@@ -19,7 +19,7 @@ class Range(override val name:java.lang.String = "",
             val min:Int = 0,
             val max:Int = 0) extends Base[scala.Int](name) with Checker {
 
-  val sizeInBytes = util.conversion.Util.getBytesForBits(size)
+  override def sizeInBytes = util.conversion.Util.getBytesForBits(size)
 
   /** Returns Array[Byte] from the given value
     *
