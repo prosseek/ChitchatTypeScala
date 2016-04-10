@@ -6,7 +6,7 @@ class TestFromClass extends FunSuite {
   test ("getFileNames test") {
     val expectRange = Set[String]("byte", "ubyte", "boolean", "age", "level")
     val expectEncode = Set[String]("date", "time", "latitude", "longitude")
-    val expectEtc = Set[String]("string", "float")
+    val expectEtc = Set[String]("string", "float", "name")
 
     val result = FromClass.getSystemTypeInstances.keys.toSet
     assert(expectRange ++ expectEncode ++ expectEtc == result)

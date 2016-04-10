@@ -5,6 +5,8 @@ import java.lang.{String => JString}
 import chitchat.types._
 import chitchat.types.encoding._
 import chitchat.types.range._
+import chitchat.types.string._
+//import chitchat.types.float._
 import util.file.Util._
 
 import scala.collection.mutable.{Map => MMap}
@@ -31,7 +33,8 @@ object FromClass {
       "float" -> new Float,
 
       // string
-      "string" -> new String
+      "string" -> new String,
+      "name" -> new Name
     )
   }
 
