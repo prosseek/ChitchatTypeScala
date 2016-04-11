@@ -18,7 +18,8 @@ class Range(override val name:java.lang.String = "",
             val signed:scala.Boolean = false,
             val min:Int = 0,
             val max:Int = 0,
-            override val correlatedLabels:Seq[java.lang.String] = null) extends Base[scala.Int](name, correlatedLabels) with Checker {
+            override val correlatedLabels:Seq[java.lang.String] = Seq[java.lang.String]())
+  extends Base[scala.Int](name, correlatedLabels) with Checker {
 
   override def sizeInBytes = util.conversion.Util.getBytesForBits(size)
 

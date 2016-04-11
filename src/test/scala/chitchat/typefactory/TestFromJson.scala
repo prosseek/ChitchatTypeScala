@@ -8,7 +8,7 @@ class TestFromJson extends FunSuite {
   val json1 =
     """
       |{
-      |  "type" : "range",
+      |  "type" : "encoding",
       |  "name" : "hello",
       |  "count" : 2,
       |  "range1_name" : "a",
@@ -30,6 +30,7 @@ class TestFromJson extends FunSuite {
   test ("simple") {
     val m = util.json.Json.parse(json1)
     val d1 = FromJson.getEncoding(m)
+    assert(d1.name == "hello")
     assert(d1.check(Seq(0, 0)) == true)
     assert(d1.check(Seq(0, 120)) == false)
     assert(d1.encode(Seq(3, -2)).get.mkString(":") == "3:-61")

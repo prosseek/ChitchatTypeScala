@@ -13,7 +13,7 @@ import scala.collection.mutable.ArrayBuffer
   * @param elements
   */
 class Encoding(override val name:java.lang.String, val elements:Seq[Range],
-               override val correlatedLabels:Seq[java.lang.String] = null)
+               override val correlatedLabels:Seq[java.lang.String] = Seq[java.lang.String]())
   extends Base[Seq[scala.Int]](name = name, correlatedLabels = correlatedLabels) with Checker {
 
   override def size = (0 /: elements)((acc, element) => acc + element.size)

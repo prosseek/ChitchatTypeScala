@@ -10,6 +10,10 @@ import scala.{Int => SInt}
 object FromJson {
 
   def getEncoding(m: Map[JString, Any]) = {
+    val typeName = m("type").asInstanceOf[JString]
+    if (typeName != "encoding")
+      throw new RuntimeException(s"not encoding type - ${typeName}")
+
     val count = m("count").asInstanceOf[SInt]
     val name = m("name").asInstanceOf[JString]
 

@@ -11,8 +11,4 @@ abstract class Base[T](val name:java.lang.String = "", val correlatedLabels:Seq[
   def check(value:T) : scala.Boolean
   def size : Int
   def sizeInBytes: Int
-  def correlated:Seq[java.lang.String] = {
-    if (correlatedLabels == null) List[java.lang.String]()
-    else correlatedLabels
-  }
 }

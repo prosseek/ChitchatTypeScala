@@ -9,5 +9,6 @@ class Latitude extends Encoding(
     new Range(name = "hour",  size = 8, min = -90, max = 90, signed = true),
     new Range(name = "minute", size = 6, min =   0, max = 59, signed = false),
     new Range(name = "second1",   size = 6, min =   0, max = 59, signed = false),
-    new Range(name = "second2",   size = 7, min =   0, max = 99, signed = false)))
+    new Range(name = "second2",   size = 7, min =   0, max = 99, signed = false)),
+  correlatedLabels = Seq[java.lang.String]("longitude"))
 
