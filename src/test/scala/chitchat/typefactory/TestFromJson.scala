@@ -20,15 +20,19 @@ class TestFromJson extends FunSuite {
       |  "range2_size" : 5,
       |  "range2_signed" : 1,
       |  "range2_min" : -10,
-      |  "range2_max" : 10
+      |  "range2_max" : 10,
+      |  "correlated_count" : 2,
+      |  "correlated1" : "x",
+      |  "correlated2" : "y"
       |}
     """.stripMargin
 
   test ("simple") {
     val m = util.json.Json.parse(json1)
     val d1 = FromJson.getEncoding(m)
-    println(d1.check(Seq(0, 0)))
-    println(d1.check(Seq(0, 120)))
-    println(d1.encode(Seq(3, -2)).mkString(":"))
+    assert(d1.check(Seq(0, 0)) == true)
+    assert(d1.check(Seq(0, 120)) == false)
+    assert(d1.encode(Seq(3, -2)).get.mkString(":") == "3:-61")
+    assert(d1.correlated == List("x", "y"))
   }
 }

@@ -25,7 +25,15 @@ object FromJson {
       ranges += new Range(name = name, size = size, signed = signed, min = min, max = max)
     }
 
-    new Encoding(name = name , ranges)
+    val correlatedLabels = ListBuffer[JString]()
+    val correlated_count = m("correlated_count").asInstanceOf[SInt]
+    // retrieve all the information
+    for (i <- 1 to correlated_count) {
+      val name = m(s"correlated${i}").asInstanceOf[JString]
+      correlatedLabels += name
+    }
+
+    new Encoding(name = name , elements = ranges, correlatedLabels = correlatedLabels.toList)
   }
 
   def getRange(m: Map[JString, Any]) = {
@@ -37,6 +45,14 @@ object FromJson {
     val min = m(s"range_min").asInstanceOf[SInt]
     val max = m(s"range_max").asInstanceOf[SInt]
 
-    new Range(name = name , size = size, signed = signed, min = min, max = max)
+    val correlatedLabels = ListBuffer[JString]()
+    val correlated_count = m("correlated_count").asInstanceOf[SInt]
+    // retrieve all the information
+    for (i <- 1 to correlated_count) {
+      val name = m(s"correlated${i}").asInstanceOf[JString]
+      correlatedLabels += name
+    }
+
+    new Range(name = name , size = size, signed = signed, min = min, max = max, correlatedLabels = correlatedLabels.toList)
   }
 }

@@ -5,7 +5,8 @@ import chitchat.types._
 import java.lang.{String => JString}
 import util.conversion._
 
-class String(override val name:JString = "string") extends Base[JString](name) with Checker {
+class String(override val name:JString = "string", correlatedLabels:Seq[java.lang.String] = null)
+  extends Base[JString](name, correlatedLabels) with Checker {
 
   private def charInRange(char:scala.Byte): scala.Boolean = {
     val uchar = 0xFF & char

@@ -12,7 +12,10 @@ import scala.collection.mutable.ArrayBuffer
   * @param name
   * @param elements
   */
-class Encoding(override val name:java.lang.String, val elements:Seq[Range]) extends Base[Seq[scala.Int]](name = name) with Checker {
+class Encoding(override val name:java.lang.String, val elements:Seq[Range],
+               override val correlatedLabels:Seq[java.lang.String] = null)
+  extends Base[Seq[scala.Int]](name = name, correlatedLabels = correlatedLabels) with Checker {
+
   override def size = (0 /: elements)((acc, element) => acc + element.size)
   def sizes = elements.map(_.size)
   def ranges = elements.map(i => (i.min, i.max))

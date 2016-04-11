@@ -5,7 +5,10 @@ import util.conversion.ByteArrayTool
 
 object Float
 
-class Float(override val name: JString = "float", val elements:Seq[JFloat] = null) extends Base[JFloat](name) with Checker {
+class Float(override val name: JString = "float",
+            val elements:Seq[JFloat] = null,
+            override val correlatedLabels:Seq[java.lang.String] = null)
+  extends Base[JFloat](name, correlatedLabels) with Checker {
   override def size = 4 * 8
   def adjustValue = 1.0f
   override def sizeInBytes = 4
