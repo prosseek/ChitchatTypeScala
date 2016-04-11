@@ -82,8 +82,12 @@ class Encoding(override val name:java.lang.String, val elements:Seq[Range],
         util.conversion.BitSetTool.bitSetToValue(bitset=bitset, bitWidth = element.size, signed = element.signed)
     }
 
+    // check if each element is within the range
+    if (check(results))
     //Some(elementsInBitset.toList.zip(sizes).map(i => util.conversion.)
-    Some(Seq[scala.Int](results:_*))
+      Some(Seq[scala.Int](results:_*))
+    else
+      None
   }
 
   override def check(value: Seq[scala.Int]): scala.Boolean = {

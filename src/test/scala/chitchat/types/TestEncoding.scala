@@ -39,4 +39,15 @@ class TestEncoding extends FunSuite {
     var byteArray = Array[Byte](1, 108, 0, 0, 0, 0, 0, 0)
     assert(e.decode(byteArray).get.toList == List(12, 11))
   }
+
+  test ("wrong decoding error") {
+    val e = new Encoding(
+      name = "time",
+      Array[Range](
+        new Range(name = "hour",     size = 5, min = 0, max = 24, signed = false),
+        new Range(name = "minute",   size = 6, min = 0, max = 59, signed = false)))
+
+    var byteArray = Array[Byte](-1, -1, 0, 0, 0, 0, 0, 0)
+    assert(e.decode(byteArray).isEmpty)
+  }
 }
