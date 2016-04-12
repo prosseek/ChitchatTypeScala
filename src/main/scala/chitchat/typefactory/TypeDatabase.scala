@@ -54,8 +54,19 @@ class TypeDatabase {
 
   def encode(label:JString, value:Any) : Option[Array[Byte]] = {
     val instance = mmap.get(label)
-    if (instance.isEmpty)
-      throw new RuntimeException(s"No instance for ${label}")
+    if (instance.isEmpty) {
+      // if the value is of string type, we can just encode them as string
+      if (value.isInstanceOf[JString]) {
+        val v = mmap.get("string").get
+        v.asInstanceOf[String].encode(value.asInstanceOf[JString])
+      }
+      else if (value.isInstanceOf[JFloat]) {
+        val v = mmap.get("float").get
+        v.asInstanceOf[Float].encode(value.asInstanceOf[JFloat])
+      }
+      else
+        throw new RuntimeException(s"No instance for ${label}")
+    }
     else {
       instance match {
         case Some(v:Encoding) => v.encode(value.asInstanceOf[Seq[Int]])
@@ -80,7 +91,7 @@ class TypeDatabase {
     * @return
     */
   def decode(label:JString, ba:Array[Byte]) : Option[Any] = {
-    val instance = mmap.get(label)
+    val instance = get(label)
     if (instance.isEmpty)
       None
     else {
