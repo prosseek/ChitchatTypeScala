@@ -1,8 +1,5 @@
 package chitchat.types.range
 
-/**
-  * Created by smcho on 4/11/16.
-  */
-class Int {
+import chitchat.types._
 
-}
+class Int extends Range(name = "int", size = 32, min = -2147483648, max = 2147483647, signed = true)

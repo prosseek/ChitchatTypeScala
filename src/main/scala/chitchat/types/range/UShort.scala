@@ -1,8 +1,5 @@
 package chitchat.types.range
 
-/**
-  * Created by smcho on 4/11/16.
-  */
-class UShort {
+import chitchat.types._
 
-}
+class UShort extends Range(name = "ushort", size = 16, min = 0, max = 65536, signed = false)

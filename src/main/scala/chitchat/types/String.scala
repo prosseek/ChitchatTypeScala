@@ -27,11 +27,9 @@ class String(override val name:JString = "string", correlatedLabels:Seq[java.lan
     // excessive bytes should be zero
     if (!checkRange(sizeInBytes, byteArray)) return None
 
-    // each of the chars in byteArray should be in range
-    byteArray.slice(1, sizeInBytes).foreach { bytearray =>
-      if (!charInRange(bytearray)) return None
-    }
-    Some(ByteArrayTool.byteArrayToString(byteArray))
+    val string = ByteArrayTool.byteArrayToString(byteArray)
+    if (check(string)) Some(string)
+    else None
   }
   override def check(value: JString): scala.Boolean = {
     value.foreach { char =>
