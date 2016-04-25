@@ -31,4 +31,48 @@ class TestString extends FunSuite
     val f = new FTest
     f.name == "string_f"
   }
+
+  test ("check test") {
+    // only 'a' (97) and 'b' (98) are allowed
+    class FTest2 extends String (name = "f", range = List(97, 'b'))
+    val pstring = new FTest2
+    val str = Array[Byte](4, 97,97,98,98)
+    assert(pstring.decode(str).isDefined)
+  }
+
+  test ("check test2") {
+    // only 'a' (97) and 'b' (98) are allowed
+    class FTest2 extends String (name = "f", range = List('a', 'b'))
+    val pstring = new FTest2
+    val str = Array[Byte](4, 91,91,98,98)
+    assert(pstring.decode(str).isEmpty)
+  }
+
+  test ("check test maxlength ok") {
+    class FTest2 extends String (name = "f", conditions = List("maxlength", 10))
+    val pstring = new FTest2
+    val str = Array[Byte](4, 97,97,98,98)
+    assert(pstring.decode(str).isDefined)
+  }
+
+  test ("check test maxlength error") {
+    class FTest2 extends String (name = "f", conditions = List("maxlength", 2))
+    val pstring = new FTest2
+    val str = Array[Byte](4, 97,97,98,98)
+    assert(pstring.decode(str).isEmpty)
+  }
+
+  test ("check test minlength ok") {
+    class FTest2 extends String (name = "f", conditions = List("minlength", 1))
+    val pstring = new FTest2
+    val str = Array[Byte](4, 97,97,98,98)
+    assert(pstring.decode(str).isDefined)
+  }
+
+  test ("check test minlength error") {
+    class FTest2 extends String (name = "f", conditions = List("minlength", 12))
+    val pstring = new FTest2
+    val str = Array[Byte](4, 97,97,98,98)
+    assert(pstring.decode(str).isEmpty)
+  }
 }

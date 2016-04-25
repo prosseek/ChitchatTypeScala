@@ -19,7 +19,7 @@ class TestTypeDatabase extends FunSuite {
 
     val flt = typeDatabase.get("float").get.asInstanceOf[Float]
     val fltEncode = flt.encode(1.23f).get
-    assert(fltEncode.mkString(":") == "64:14:-72:82")
+    assert(fltEncode.mkString(":") == "63:-99:112:-92")
     assert(Math.abs(flt.decode(fltEncode).get - 1.23) < 0.001)
   }
 
@@ -54,7 +54,7 @@ class TestTypeDatabase extends FunSuite {
 
     val flt = typeDatabase.get("e").get.asInstanceOf[Float]
     val fltEncode = flt.encode(1.23f).get
-    assert(fltEncode.mkString(":") == "64:14:-72:82")
+    assert(fltEncode.mkString(":") == "63:-99:112:-92")
     assert(Math.abs(flt.decode(fltEncode).get - 1.23) < 0.001)
   }
 
@@ -69,6 +69,6 @@ class TestTypeDatabase extends FunSuite {
     val types = FromClass.getTypeInstances("")
     val typeDatabase = TypeDatabase(Seq[JString](""))
     val tm = typeDatabase.encode("hello", 4.323f).get
-    assert(tm.mkString(":") == "64:-86:86:4")
+    assert(tm.mkString(":") == "64:-118:86:4")
   }
 }

@@ -5,12 +5,62 @@ import chitchat.types._
 import java.lang.{String => JString}
 import util.conversion._
 
-class String(override val name:JString = "string", correlatedLabels:Seq[java.lang.String] = Seq[java.lang.String]())
+class String(override val name:JString = "string",
+             correlatedLabels:Seq[java.lang.String] = Seq[java.lang.String](),
+             range:Seq[scala.Char] = Seq[scala.Char](),
+             conditions:Seq[Any] = Seq[Any]())
   extends Base[JString](name, correlatedLabels) with Checker {
 
   private def charInRange(char:scala.Byte): scala.Boolean = {
     val uchar = 0xFF & char
     (uchar >= 0x20 && uchar <= 0x7E)
+  }
+
+  /**
+    * range:Seq[String] has two elements
+    *
+    * for two element
+    *   range[0] = min
+    *   range[1] = max
+    *
+    * @return
+    */
+  def checkRange(char:scala.Byte) = {
+    if (range.length == 0) true
+    else {
+      if (range.length == 2) {
+        val max = range(1)
+        val min = range(0)
+        char <= max && char >= min
+      }
+      else
+        throw new RuntimeException(s"conditions length is more than two ${conditions}")
+    }
+  }
+
+  /** condition checks
+    *
+    * 1. length = condition(0)
+    * 2. count = condition(1)
+    *
+    * @param input
+    * @return
+    */
+  def checkCondition(input:JString) = {
+    if (conditions.length == 0) true
+    else {
+      val function_name = conditions(0)
+      val value = conditions(1).asInstanceOf[Int]
+
+      if (function_name == "maxlength") {
+        input.length <= value
+      }
+      else if (function_name == "minlength") {
+        input.length >= value
+      }
+      else
+        throw new RuntimeException(s"only maxlength/minlength is supported")
+    }
   }
 
   override def encode(value: JString): Option[Array[scala.Byte]] = {
@@ -32,14 +82,15 @@ class String(override val name:JString = "string", correlatedLabels:Seq[java.lan
     else None
   }
   override def check(value: JString): scala.Boolean = {
+    if (!checkCondition(value)) return false
     value.foreach { char =>
+      if (!checkRange(char.toByte)) return false
       if (!charInRange(char.toByte)) return false
     }
     true
   }
 
   // size == 0 means the type is String
-
   override def size: Int = 0
 
   override def sizeInBytes: Int = 0

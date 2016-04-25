@@ -6,19 +6,21 @@ import util.conversion.ByteArrayTool
 object Float
 
 class Float(override val name: JString = "float",
-            val elements:Seq[JFloat] = null,
+            val ranges:Seq[JFloat] = null,
+            val shift:JFloat = 0.0f,
             override val correlatedLabels:Seq[java.lang.String] = Seq[java.lang.String]())
   extends Base[JFloat](name, correlatedLabels) with Checker {
   override def size = 4 * 8
-  def adjustValue = 1.0f
   override def sizeInBytes = 4
 
-  def adJustedValue(value:JFloat) = if (value > 0) value + adjustValue else value - adjustValue
-  def revertedValue(value:JFloat) = if (value > 0) value - adjustValue else value + adjustValue
+  def adjustedValue(value:JFloat) = if (value > 0) value + shift else value - shift
+  def revertedValue(value:JFloat) = if (value > 0) value - shift else value + shift
 
   override def encode(value: JFloat): Option[Array[scala.Byte]] = {
-    var adjustedValue = adJustedValue(value)
-    Some(ByteArrayTool.floatToByteArray(adjustedValue))
+
+    if (!check(value)) return None
+    var shifted = adjustedValue(value)
+    Some(ByteArrayTool.floatToByteArray(shifted))
   }
   override def decode(byteArray: Array[scala.Byte]): Option[JFloat] = {
 
@@ -29,6 +31,12 @@ class Float(override val name: JString = "float",
 
       if (decodedValue.isNaN || decodedValue.isInfinite)
         return None
+
+      // check if decoded value is in the shift range
+      if (shift != 0.0f) {
+        if (decodedValue >= 0.0) if (decodedValue < shift) return None
+        if (decodedValue < 0.0)  if (decodedValue > -shift) return None
+      }
 
       val rv = revertedValue(decodedValue)
       if (check(rv))
@@ -41,10 +49,10 @@ class Float(override val name: JString = "float",
     }
   }
   override def check(value: JFloat): scala.Boolean = {
-    if (elements == null) true
+    if (ranges == null) true
     else {
-      val min = elements(0)
-      val max = elements(1)
+      val min = ranges(0)
+      val max = ranges(1)
 
       (value >= min && value <= max)
     }
