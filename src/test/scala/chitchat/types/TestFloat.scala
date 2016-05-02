@@ -28,7 +28,7 @@ class TestFloat extends FunSuite {
   }
 
   test ("float range test") {
-    class RangeFloat extends Float("float_rfloat", ranges = Seq[JFloat](0.0f, 2.0f))
+    class RangeFloat extends Float("float_rfloat", min = 0.0f, max = 2.0f)
 
     val rf = new RangeFloat
     assert(false == rf.check(2.5f))
@@ -38,8 +38,8 @@ class TestFloat extends FunSuite {
   }
 
   test ("float range & shift test") {
-    class RangeFloat0 extends Float("float_rfloat", ranges = Seq[JFloat](-100.0f, 100.0f), shift = 0.0f)
-    class RangeFloat10 extends Float("float_rfloat", ranges = Seq[JFloat](-100.0f, 100.0f), shift = 10.0f)
+    class RangeFloat0 extends Float("float_rfloat", min = -100.0f, max = 100.0f)
+    class RangeFloat10 extends Float("float_rfloat", min = -100.0f, max = 100.0f, shift = 10.0f)
 
     val r0 = new RangeFloat0
     val r10 = new RangeFloat10

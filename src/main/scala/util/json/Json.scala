@@ -80,7 +80,7 @@ private class JsonParser extends JavaTokenParsers {
   }
 
   def number: Parser[Any] = floatingPointNumber ^^ {
-    case num if num.matches(".*[.eE].*") => BigDecimal(num)
+    case num if num.matches(".*[.eE].*") => num.toFloat // BigDecimal(num)
     case num => {
       val rv = num.toLong
       if (rv >= Int.MinValue && rv <= Int.MaxValue) rv.toInt else rv

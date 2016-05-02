@@ -6,8 +6,8 @@ import java.lang.{String => JString}
 import util.conversion._
 
 class String(override val name:JString = "string",
-             correlatedLabels:Seq[java.lang.String] = Seq[java.lang.String](),
-             range:Seq[scala.Char] = Seq[scala.Char](),
+             min:scala.Char = 0.toChar,
+             max:scala.Char = 0.toChar,
              conditions:Seq[Any] = Seq[Any]())
   extends Base[JString](name) with Checker {
 
@@ -26,15 +26,9 @@ class String(override val name:JString = "string",
     * @return
     */
   def checkRange(char:scala.Byte) = {
-    if (range.length == 0) true
+    if (min == max && min == 0.toChar) true
     else {
-      if (range.length == 2) {
-        val max = range(1)
-        val min = range(0)
         char <= max && char >= min
-      }
-      else
-        throw new RuntimeException(s"conditions length is more than two ${conditions}")
     }
   }
 

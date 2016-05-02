@@ -6,7 +6,8 @@ import util.conversion.ByteArrayTool
 object Float
 
 class Float(override val name: JString = "float",
-            val ranges:Seq[JFloat] = null,
+            val min: JFloat = 0.0f,
+            val max: JFloat = 0.0f,
             val shift:JFloat = 0.0f
             )
   extends Base[JFloat](name) with Checker {
@@ -49,11 +50,8 @@ class Float(override val name: JString = "float",
     }
   }
   override def check(value: JFloat): scala.Boolean = {
-    if (ranges == null) true
+    if (min == max && min == 0.0f) true
     else {
-      val min = ranges(0)
-      val max = ranges(1)
-
       (value >= min && value <= max)
     }
   }

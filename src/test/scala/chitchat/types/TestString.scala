@@ -34,7 +34,7 @@ class TestString extends FunSuite
 
   test ("check test") {
     // only 'a' (97) and 'b' (98) are allowed
-    class FTest2 extends String (name = "f", range = List(97, 'b'))
+    class FTest2 extends String (name = "f", min = 97.toChar, max = 'b')
     val pstring = new FTest2
     val str = Array[Byte](4, 97,97,98,98)
     assert(pstring.decode(str).isDefined)
@@ -42,7 +42,7 @@ class TestString extends FunSuite
 
   test ("check test2") {
     // only 'a' (97) and 'b' (98) are allowed
-    class FTest2 extends String (name = "f", range = List('a', 'b'))
+    class FTest2 extends String (name = "f", min = 'a', max = 'b')
     val pstring = new FTest2
     val str = Array[Byte](4, 91,91,98,98)
     assert(pstring.decode(str).isEmpty)
