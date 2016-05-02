@@ -37,7 +37,7 @@ object FromJson {
       correlatedLabels += name
     }
 
-    new Encoding(name = name , elements = ranges, correlatedLabels = correlatedLabels.toList)
+    new Encoding(name = name , elements = ranges)
   }
 
   def getRange(m: Map[JString, Any]) = {
@@ -57,6 +57,6 @@ object FromJson {
       correlatedLabels += name
     }
 
-    new Range(name = name , size = size, signed = signed, min = min, max = max, correlatedLabels = correlatedLabels.toList)
+    new Range(name = name , size = size, signed = signed, min = min, max = max)
   }
 }

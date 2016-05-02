@@ -8,6 +8,7 @@ import java.io.File
   */
 
 object Util {
+// todo: the plugin now uses summary (binary or textual (JSON))
 
   /**
     * Returns the class names in a directory prepended with namespace
@@ -40,18 +41,18 @@ object Util {
     * @return List[String] of the class names in the directory (given namespace prependes)
     */
 
-  def getFileNames(directory:String, namespace:String) = {
-    val files = ArrayBuffer[String]()
-    val namespaceString = namespace.replace(".", "/")
-    val d = new File(directory + "/" + namespaceString)
-    if (d.exists && d.isDirectory) {
-      d.listFiles.filter(_.getName.endsWith(".class"))
-        .map(namespace + "." + _.getName.replace(directory, "").replace(namespaceString, "")
-          .replace(".class","")).toList
-    } else {
-      List[String]()
-    }
-  }
+//  def getFileNames(directory:String, namespace:String) = {
+//    val files = ArrayBuffer[String]()
+//    val namespaceString = namespace.replace(".", "/")
+//    val d = new File(directory + "/" + namespaceString)
+//    if (d.exists && d.isDirectory) {
+//      d.listFiles.filter(_.getName.endsWith(".class"))
+//        .map(namespace + "." + _.getName.replace(directory, "").replace(namespaceString, "")
+//          .replace(".class","")).toList
+//    } else {
+//      List[String]()
+//    }
+//  }
 
   /**
     * Returns an instantiation of classes in the directory.
@@ -70,9 +71,9 @@ object Util {
     * @return
     */
 
-  def getClassInstances[T](directory:String, namespace:String) = {
-    val files = getFileNames(directory, namespace)
-
-    files.map(Class.forName(_).newInstance().asInstanceOf[T])
-  }
+//  def getClassInstances[T](directory:String, namespace:String) = {
+//    val files = getFileNames(directory, namespace)
+//
+//    files.map(Class.forName(_).newInstance().asInstanceOf[T])
+//  }
 }

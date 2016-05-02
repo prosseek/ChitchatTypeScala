@@ -39,20 +39,21 @@ object FromClass {
   }
 
   def getUserTypeInstances(directory: JString, namespace: JString = "chitchat.types") = {
-
-    val mmap = MMap[JString, chitchat.types.Base[_]]()
-
-    if (directory == "") {
-      mmap
-    } else {
-      // val directory = "./src/test/resources/util/file/"
-      val instances = getClassInstances[chitchat.types.Base[_]](directory, namespace)
-
-      instances.foreach { instance =>
-        mmap(instance.name) = instance
-      }
-      mmap
-    }
+    // todo: plugin uses only binary or textual summary
+    MMap[JString, chitchat.types.Base[_]]()
+//    val mmap = MMap[JString, chitchat.types.Base[_]]()
+//
+//    if (directory == "") {
+//      mmap
+//    } else {
+//      // val directory = "./src/test/resources/util/file/"
+//      val instances = getClassInstances[chitchat.types.Base[_]](directory, namespace)
+//
+//      instances.foreach { instance =>
+//        mmap(instance.name) = instance
+//      }
+//      mmap
+//    }
   }
 
   def getTypeInstances(directory:JString) : Map[JString, chitchat.types.Base[_]] = {

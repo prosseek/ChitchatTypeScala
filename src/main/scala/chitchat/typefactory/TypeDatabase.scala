@@ -23,6 +23,9 @@ object TypeDatabase {
   }
 }
 
+/**
+  * TypeDatabase is a wrapper of a dictionary (name (String type) -> Type (Base type))
+  */
 class TypeDatabase {
   private val mmap = MMap[JString, chitchat.types.Base[_]]()
 

@@ -34,6 +34,6 @@ class TestFromJson extends FunSuite {
     assert(d1.check(Seq(0, 0)) == true)
     assert(d1.check(Seq(0, 120)) == false)
     assert(d1.encode(Seq(3, -2)).get.mkString(":") == "3:-61")
-    assert(d1.correlatedLabels == List("x", "y"))
+    //assert(d1.correlatedLabels == List("x", "y"))
   }
 }

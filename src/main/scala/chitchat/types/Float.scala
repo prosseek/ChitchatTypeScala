@@ -7,9 +7,9 @@ object Float
 
 class Float(override val name: JString = "float",
             val ranges:Seq[JFloat] = null,
-            val shift:JFloat = 0.0f,
-            override val correlatedLabels:Seq[java.lang.String] = Seq[java.lang.String]())
-  extends Base[JFloat](name, correlatedLabels) with Checker {
+            val shift:JFloat = 0.0f
+            )
+  extends Base[JFloat](name) with Checker {
   override def size = 4 * 8
   override def sizeInBytes = 4
 

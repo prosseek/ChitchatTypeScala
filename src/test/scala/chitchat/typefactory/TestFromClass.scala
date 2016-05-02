@@ -20,19 +20,7 @@ class TestFromClass extends FunSuite {
 
   test ("get user type instances") {
     val userMap = FromClass.getUserTypeInstances(directory = "./src/test/resources/util/file/")
+    // todo: removed object (class) type plugins, test with summary type plugins
 
-    userMap.foreach {
-      case (key, value) =>
-        key match {
-          // from the name we know that the type inherits from Rnage so we can use the asInstanceOf
-          case "a" => assert(value.asInstanceOf[chitchat.types.Range].size == 5)
-          case "b" => assert(value.asInstanceOf[chitchat.types.Range].size == 10)
-          case "c" => assert(value.asInstanceOf[chitchat.types.Range].size == 15)
-          case "d" => assert(value.asInstanceOf[chitchat.types.Encoding].size == 16)
-          case "e" => assert(value.asInstanceOf[chitchat.types.Float].name == "e")
-          case "f" => assert(value.asInstanceOf[chitchat.types.String].name == "f")
-          case _ => throw new RuntimeException(s"Something's wrong ${key}")
-        }
-    }
   }
 }
