@@ -174,7 +174,7 @@ object FromJson {
     * ==== caveat ====
     *  1. The range_min/max uses string as input.
     *  2. The string is converted into Scala.Char, so only the first char in the string is used.
-    *  
+    *
     * @param m
     * @return
     */
