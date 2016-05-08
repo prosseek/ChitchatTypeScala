@@ -67,6 +67,10 @@ class TypeDatabase {
         val v = mmap.get("float").get
         v.asInstanceOf[Float].encode(value.asInstanceOf[JFloat])
       }
+      else if (value.isInstanceOf[Int]) {
+        val v = mmap.get("short").get
+        v.asInstanceOf[range.Short].encode(value.asInstanceOf[Int])
+      }
       else
         throw new RuntimeException(s"No instance for ${label}")
     }
@@ -95,8 +99,9 @@ class TypeDatabase {
     */
   def decode(label:JString, ba:Array[Byte]) : Option[Any] = {
     val instance = get(label)
-    if (instance.isEmpty)
+    if (instance.isEmpty) {
       None
+    }
     else {
       instance match {
         case Some(v:Float) => Some(util.conversion.ByteArrayTool.byteArrayToFloat(ba))

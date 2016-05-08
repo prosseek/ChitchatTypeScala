@@ -72,4 +72,5 @@ class TestTypeDatabase extends FunSuite {
     val tm = typeDatabase.encode("hello", 4.323f).get
     assert(tm.mkString(":") == "64:-118:86:4")
   }
+
 }

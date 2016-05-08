@@ -22,6 +22,8 @@ object FromClass {
       "boolean" -> new Boolean,
       "byte" -> new Byte,
       "ubyte" -> new UByte,
+      "short" -> new Short,
+      "ushort" -> new UShort,
 
       // encoded
       "date" -> new Date,
